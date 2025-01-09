@@ -121,8 +121,7 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('partners/{id}', [PartnersController::class, 'destroy']);
 
     //--------registerIn
-    Route::post('registerIn', [RegisterInController::class, 'store']);
-    Route::post('registerIn/{id}', [RegisterInController::class, 'update']);
+
     Route::delete('registerIn/{id}', [RegisterInController::class, 'destroy']);
     Route::get('registerIn', [RegisterInController::class, 'index']);
 
@@ -139,7 +138,8 @@ Route::middleware('auth:api')->group(function () {
 });
 
 
-
+Route::post('registerIn', [RegisterInController::class, 'store']);
+Route::post('registerIn/{id}', [RegisterInController::class, 'update']);
 
 //--------home
 Route::get('main', [HomeController::class, 'index']);

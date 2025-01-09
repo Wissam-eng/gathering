@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Home;
+use App\Models\home;
 use App\Models\video_gallery;
 use App\Models\target_group;
 use App\Models\supervisor_speech;
@@ -26,7 +26,7 @@ class HomeController extends Controller
     public function index()
     {
         try {
-            $homes = Home::all();
+            $homes = home::all();
             return response()->json(['success' => true, 'main' => $homes]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'حدث خطأ أثناء جلب البيانات: ' . $e->getMessage()], 500);
@@ -38,7 +38,7 @@ class HomeController extends Controller
     public function home()
     {
         try {
-            $homes = Home::all();
+            $homes = home::all();
             $video_gallery = video_gallery::all();
             $target_group = target_group::all();
             $supervisor_speech = supervisor_speech::all();
@@ -55,22 +55,22 @@ class HomeController extends Controller
             $about = about::all();
 
             return response()->json(['success' => true,
-            
-             'main' => $homes,
+
+            'main' => $homes,
+            'about' => $about,
+            'goals' => $goals,
+            'target_group' => $target_group,
+            'supervisor_speech' => $supervisor_speech,
+            'organizing_entity' => $organizing_entity,
+            'Forum_management' => $Forum_management,
+            'Media_partner' => $Media_partner,
+            'Key_speakers' => $Key_speakers,
+            'Sponsorship' => $Sponsorship,
+            'Latest_news' => $Latest_news,
+            'Photo_gallery' => $Photo_gallery,
              'video_gallery' => $video_gallery,
-             'target_group' => $target_group,
-             'supervisor_speech' => $supervisor_speech,
-             'Sponsorship' => $Sponsorship,
-             'Photo_gallery' => $Photo_gallery,
              'partners' => $partners,
-             'organizing_entity' => $organizing_entity,
-             'Latest_news' => $Latest_news,
-             'Media_partner' => $Media_partner,
-             'Key_speakers' => $Key_speakers,
-             'Forum_management' => $Forum_management,
-             'goals' => $goals,
              'contct_footer' => $contct_footer,
-             'about' => $about
 
             ]);
         } catch (\Exception $e) {
@@ -106,7 +106,7 @@ class HomeController extends Controller
                 $imagePath = 'storage/app/public/' . $imagePath;
             }
 
-            $home = Home::create([
+            $home = home::create([
                 'title' => $request->input('title'),
                 'description' => $request->input('description'),
                 'image' => $imagePath ?? null,
@@ -125,7 +125,7 @@ class HomeController extends Controller
     public function update(Request $request, $id)
     {
 
-        $home = Home::find($id);
+        $home = home::find($id);
 
         if (!$home) {
             return response()->json(['error' => 'البيانات غير موجودة'], 404);
@@ -165,7 +165,7 @@ class HomeController extends Controller
 
     public function destroy($id)
     {
-        $home = Home::find($id);
+        $home = home::find($id);
 
         if (!$home) {
             return response()->json(['error' => 'البيانات غير موجودة'], 404);
