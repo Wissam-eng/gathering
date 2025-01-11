@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('photo_galleries', function (Blueprint $table) {
             $table->id();
             $table->string('image');
+            $table->string('cover');
+            $table->string('code');
             $table->timestamps();
         });
     }
