@@ -43,7 +43,19 @@ class HomeController extends Controller
             $target_group = target_group::all();
             $supervisor_speech = supervisor_speech::all();
             $Sponsorship = Sponsorship::all();
-            $Photo_gallery = Photo_gallery::all();
+
+            $Photo_gallery = Photo_gallery::all()
+            ->groupBy('code')
+            ->map(function ($group) {
+                $cover = $group->first()->cover;
+
+                $images = $group->pluck('image');
+
+                return [
+                    'cover' => $cover,
+                    'images' => $images,
+                ];
+            });
             $partners = partners::all();
             $organizing_entity = organizing_entity::all();
             $Latest_news = Latest_news::all();

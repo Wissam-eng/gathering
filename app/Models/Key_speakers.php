@@ -11,6 +11,7 @@ class Key_speakers extends Model
 
     protected $fillable = [
         'title',
+        'name',
         'description',
         'image',
         'file',
