@@ -47,6 +47,7 @@ class KeySpeakersController extends Controller
 
             $Key_speakers = Key_speakers::create([
                 'title' => $request->input('title'),
+                'name' => $request->input('name'),
                 'description' => $request->input('description'),
                 'image' => $imagePath,
                 'file' => $filePath,
