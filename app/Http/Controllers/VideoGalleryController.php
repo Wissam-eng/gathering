@@ -6,6 +6,15 @@ use App\Models\video_gallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+use Illuminate\Support\Facades\Log;
+
+use FFMpeg\FFMpeg;
+use FFMpeg\FFProbe;
+
+use getID3;
+
+
+
 
 class VideoGalleryController extends Controller
 {
@@ -17,12 +26,14 @@ class VideoGalleryController extends Controller
     }
 
 
+
+
+
     public function store(Request $request)
     {
-
-
-
         $validator = Validator::make($request->all(), [
+            'title' => 'required|array|min:1',
+            'title.*' => 'required|string|max:255',
             'video' => 'required|array|min:1',
             'video.*' => 'required|mimes:mp4,mov,avi,wmv,flv,mkv|max:10000',
         ]);
@@ -31,27 +42,52 @@ class VideoGalleryController extends Controller
             return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
         }
 
+
+
+
+
+        if (count($request->input('title')) !== count($request->file('video'))) {
+            return response()->json(['error' => 'عدد العناوين لا يتطابق مع عدد الفيديوهات.'], 400);
+        }
+
         try {
             $imagePaths = [];
+            $getID3 = new getID3();
 
             if ($request->hasFile('video')) {
-                foreach ($request->file('video') as $image) {
-                    $imagePath = $image->store('video/video_gallery', 'public');
-                    $imagePaths[] = 'storage/app/public/' . $imagePath;
+                foreach ($request->file('video') as $index => $video) {
+                    $videoPath = $video->store('video/video_gallery', 'public');
+                    $fullPath = storage_path('app/public/' . $videoPath);
+
+                    $fileInfo = $getID3->analyze($fullPath);
+                    $duration = $fileInfo['playtime_seconds'] ?? 0;
+
+                    $imagePaths[] = [
+                        'path' => 'storage/video/video_gallery/' . $videoPath,
+                        'duration' => round($duration),
+                        'title' => $request->input('title')[$index],
+                    ];
                 }
             }
 
-            foreach ($imagePaths as $imagePath) {
-                $gallery =  video_gallery::create([
-                    'video' => $imagePath,
+            foreach ($imagePaths as $videoData) {
+                video_gallery::create([
+                    'video' => $videoData['path'],
+                    'duration' => $videoData['duration'],
+                    'title' => $videoData['title'],
                 ]);
             }
 
             return response()->json(['success' => 'تم إضافة البيانات بنجاح', 'data' => $imagePaths], 201);
         } catch (\Exception $e) {
+            Log::error('Error storing video: ' . $e->getMessage());
             return response()->json(['error' => 'حدث خطأ أثناء إضافة البيانات: ' . $e->getMessage()], 500);
         }
     }
+
+
+
+
 
 
 
@@ -63,14 +99,11 @@ class VideoGalleryController extends Controller
             return response()->json(['error' => 'البيانات غير موجودة'], 404);
         }
 
-
-
         $input = $request->all();
-
-
 
         $validator = Validator::make($request->all(), [
             'video' => 'required|array|min:1',
+            'title.*' => 'required|string|max:255',
             'video.*' => 'required|mimes:mp4,mov,avi,wmv,flv,mkv|max:10000',
         ]);
 
@@ -79,27 +112,23 @@ class VideoGalleryController extends Controller
         }
 
         try {
-
+            $getID3 = new getID3();
             if ($request->hasFile('video')) {
-                foreach ($video_gallery->get() as $item) {
-
-                    if (file_exists(public_path('storage/' . $item->video))) {
-                        unlink(public_path('storage/' . $item->video));
-                    }
+                if (file_exists(public_path('storage/' . $video_gallery->video))) {
+                    unlink(public_path('storage/' . $video_gallery->video));
                 }
 
-                $imagePaths = [];
+                $videoPath = $request->file('video')[0]->store('video/video_gallery', 'public');
+                $fullPath = storage_path('app/public/' . $videoPath);
 
-                foreach ($request->file('video') as $video) {
-                    $imagePath = $video->store('video/video_gallery', 'public');
-                    $imagePaths[] = 'storage/app/public/' . $imagePath;
-                }
+                $fileInfo = $getID3->analyze($fullPath);
+                $duration = $fileInfo['playtime_seconds'] ?? 0;
 
-                foreach ($imagePaths as $imagePath) {
-                    $video_gallery->update([
-                        'video' => $imagePath,
-                    ]);
-                }
+                $video_gallery->update([
+                    'video' => $videoPath,
+                    'title' => $input['title'],
+                    'duration' => $duration,
+                ]);
             }
 
             return response()->json(['success' => 'تم تعديل البيانات بنجاح', 'data' => $video_gallery]);
@@ -107,6 +136,7 @@ class VideoGalleryController extends Controller
             return response()->json(['error' => 'حدث خطأ أثناء تعديل البيانات: ' . $e->getMessage()], 500);
         }
     }
+
 
 
 
