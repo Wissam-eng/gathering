@@ -20,6 +20,7 @@ class SponsorshipController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'name' => 'sometimes|string|max:255',
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
             'link' => 'sometimes|url',
@@ -38,6 +39,7 @@ class SponsorshipController extends Controller
             }
 
             $Sponsorship = Sponsorship::create([
+                'name' => $request->input('name'),
                 'title' => $request->input('title'),
                 'description' => $request->input('description'),
                 'image' => $imagePath ?? null,
@@ -64,6 +66,7 @@ class SponsorshipController extends Controller
         $input = $request->all();
 
         $validator = Validator::make($request->all(), [
+            'name' => 'sometimes|string|max:255',
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
             'link' => 'sometimes|url',
