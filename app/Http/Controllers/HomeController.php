@@ -18,6 +18,9 @@ use App\Models\goals;
 use App\Models\Forum_management;
 use App\Models\contct_footer;
 use App\Models\about;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -26,11 +29,151 @@ class HomeController extends Controller
     public function index()
     {
         try {
-            $homes = home::all();
-            return response()->json(['success' => true, 'main' => $homes]);
+
+            $main = home::all();
+
+            return view('main.index', compact('main'));
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء جلب البيانات: ' . $e->getMessage()], 500);
+            // return response()->json(['error' => 'حدث خطأ أثناء جلب البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'البيانات غير موجودة'  . $e->getMessage());
         }
+    }
+
+
+    public function users()
+    {
+        $users = User::all();
+        return view('users.index', compact('users'));
+    }
+
+
+
+    public function members()
+    {
+        $members = registerIn::all();
+        return view('members.index', compact('members'));
+    }
+
+
+
+    public function profile()
+    {
+        $profile = User::find(auth()->user()->id);
+        return view('profile.index', compact('profile'));
+    }
+
+
+
+
+
+    public function dashboard()
+    {
+        return redirect()->route('main.index');
+    }
+
+
+
+    public function register()
+    {
+        return view('users.create');
+    }
+
+
+    public function store_user(Request $request)
+    {
+
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|string|min:1|confirmed',
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->back()->with('error', 'حدث خطاء اثناء التسجيل: ' . $validator->errors());
+            }
+
+
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+
+            return redirect()->back()->with([
+                'success' => 'تم التسجيل بنجاح user :' . $user->email . ' password :' . $request->password
+
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'حدث خطاء اثناء التسجيل: ' . $e->getMessage());
+        }
+    }
+
+
+
+    public function update_profile(Request $request)
+    {
+        try {
+
+            $user = User::find($request->id);
+
+            if (!$user) {
+                return redirect()->back()->with('error', 'البيانات غير موجودة');
+            }
+
+
+            $validator = Validator::make($request->all(), [
+                'name' => 'sometimes|string|max:255',
+                'img' => 'image|mimes:jpeg,svg,jpg,webp,png,jpg,gif|max:2048',
+                'email' => 'sometimes|email',
+                'password' => 'nullable|string|min:1',
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->back()->with('error', 'حدث خطاء اثناء التسجيل: ' . $validator->errors());
+            }
+
+
+            if($request->has('password')) {
+                $user->password = Hash::make($request->password);
+            }
+
+            if ($request->hasFile('img')) {
+                $imagePath = $request->file('img')->store('images/users', 'public');
+                $imagePath = 'storage/app/public/' . $imagePath;
+                $user->img = $imagePath;
+            }
+
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->save();
+            return redirect()->back()->with([
+                'success' => 'تم تحديث البيانات بنجاح'
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'حدث خطاء اثناء تحديث البيانات: ' . $e->getMessage());
+        }
+    }
+
+
+
+
+
+
+    public function create()
+    {
+        return view('main.create');
+    }
+
+    public function edit($id)
+    {
+        $card = home::find($id);
+        if (!$card) {
+            return redirect()->back()->with('error', 'البيانات غير موجودة');
+        }
+
+        return view('main.edite')->with('card', $card);
     }
 
 
@@ -45,17 +188,17 @@ class HomeController extends Controller
             $Sponsorship = Sponsorship::all();
 
             $Photo_gallery = Photo_gallery::all()
-            ->groupBy('code')
-            ->map(function ($group) {
-                $cover = $group->first()->cover;
+                ->groupBy('code')
+                ->map(function ($group) {
+                    $cover = $group->first()->cover;
 
-                $images = $group->pluck('image');
+                    $images = $group->pluck('image');
 
-                return [
-                    'cover' => $cover,
-                    'images' => $images,
-                ];
-            });
+                    return [
+                        'cover' => $cover,
+                        'images' => $images,
+                    ];
+                });
             $partners = partners::all();
             $organizing_entity = organizing_entity::all();
             $Latest_news = Latest_news::all();
@@ -66,27 +209,29 @@ class HomeController extends Controller
             $contct_footer = contct_footer::all();
             $about = about::all();
 
-            return response()->json(['success' => true,
+            return response()->json([
+                'success' => true,
 
-            'main' => $homes,
-            'about' => $about,
-            'goals' => $goals,
-            'target_group' => $target_group,
-            'supervisor_speech' => $supervisor_speech,
-            'organizing_entity' => $organizing_entity,
-            'Forum_management' => $Forum_management,
-            'Media_partner' => $Media_partner,
-            'Key_speakers' => $Key_speakers,
-            'Sponsorship' => $Sponsorship,
-            'Latest_news' => $Latest_news,
-            'Photo_gallery' => $Photo_gallery,
-             'video_gallery' => $video_gallery,
-             'partners' => $partners,
-             'contct_footer' => $contct_footer,
+                'main' => $homes,
+                'about' => $about,
+                'goals' => $goals,
+                'target_group' => $target_group,
+                'supervisor_speech' => $supervisor_speech,
+                'organizing_entity' => $organizing_entity,
+                'Forum_management' => $Forum_management,
+                'Media_partner' => $Media_partner,
+                'Key_speakers' => $Key_speakers,
+                'Sponsorship' => $Sponsorship,
+                'Latest_news' => $Latest_news,
+                'Photo_gallery' => $Photo_gallery,
+                'video_gallery' => $video_gallery,
+                'partners' => $partners,
+                'contct_footer' => $contct_footer,
 
             ]);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء جلب البيانات: ' . $e->getMessage()], 500);
+            // return response()->json(['error' => 'حدث خطأ أثناء جلب البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء جلب البيانات:'  . $e->getMessage());
         }
     }
 
@@ -127,9 +272,9 @@ class HomeController extends Controller
                 'text' => $request->input('text'),
             ]);
 
-            return response()->json(['success' => 'تم إضافة البيانات بنجاح', 'data' => $home], 201);
+            return redirect()->route('main.index')->with('message', 'تم اضافة البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء إضافة البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء جلب البيانات:'  . $e->getMessage());
         }
     }
 
@@ -140,7 +285,8 @@ class HomeController extends Controller
         $home = home::find($id);
 
         if (!$home) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            // return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->back()->with('error', 'البيانات غير موجودة');
         }
 
         $input = $request->all();
@@ -155,7 +301,7 @@ class HomeController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء حذف البيانات: ' . $validator->errors());
         }
 
         try {
@@ -168,9 +314,10 @@ class HomeController extends Controller
                 $input['image'] = $imagePath;
             }
             $home->update($input);
-            return response()->json(['success' => 'تم تعديل البيانات بنجاح', 'data' => $home]);
+            return redirect()->route('main.index')->with('message', 'تم تعديل البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء تعديل البيانات: ' . $e->getMessage()], 500);
+            // return response()->json(['error' => 'حدث خطأ أثناء تعديل البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء حذف البيانات: ' . $e->getMessage());
         }
     }
 
@@ -185,9 +332,11 @@ class HomeController extends Controller
 
         try {
             $home->delete();
-            return response()->json(['success' => 'تم حذف البيانات بنجاح']);
+            return redirect()->route('main.index')->with('message', 'تم حذف البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء حذف البيانات: ' . $e->getMessage()], 500);
+            // return response()->json(['error' => 'حدث خطأ أثناء حذف البيانات: ' . $e->getMessage()], 500);
+
+            return redirect()->route('main.index')->with('error', 'حدث خطأ أثناء حذف البيانات: ' . $e->getMessage());
         }
     }
 }

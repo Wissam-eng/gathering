@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\registerIn;
+use App\Models\RegisterIn;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -11,15 +11,35 @@ class RegisterInController extends Controller
 {
     public function index()
     {
-        $registers = registerIn::all();
-        return response()->json([
-            'success' => true,
-            'registers' => $registers
-        ]);
+        $registers = RegisterIn::all();
+        return view('RegisterIn.index', compact('registers'));
+    }
+
+
+
+
+
+    public function create()
+    {
+        return view('RegisterIn.create');
+    }
+
+
+
+    public function edit($id)
+    {
+        $card = RegisterIn::find($id);
+        if (!$card) {
+            return redirect()->back()->with('error', 'البيانات غير موجودة');
+        }
+
+        return view('RegisterIn.edite')->with('card', $card);
     }
 
     public function store(Request $request)
     {
+
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'register_as' => 'required|string|max:255',
             'first_name' => 'required|string|max:255',
@@ -33,11 +53,8 @@ class RegisterInController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 400);
+            // return redirect()->back()->withErrors($validator)->with('error', 'Validation error');
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         try {
@@ -48,35 +65,24 @@ class RegisterInController extends Controller
                 $imagePath = 'storage/app/public/' . $imagePath;
                 $data['image'] = $imagePath;
             }
-            // dd($data);
-            $register = registerIn::create($data);
 
+            $register = RegisterIn::create($data);
 
+            return response()->json(['message' => 'Created successfully'], 201);
 
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Created successfully',
-                'register' => $register
-            ]);
+            // return redirect()->route('RegisterIn.index')->with('success', 'Created successfully');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error: ' . $e->getMessage()
-            ], 500);
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
 
     public function update(Request $request, $id)
     {
-
-
-        $registerIn = registerIn::find($id);
+        $registerIn = RegisterIn::find($id);
 
         if (!$registerIn) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->route('RegisterIn.index')->with('error', 'Data not found');
         }
-
 
         $validator = Validator::make($request->all(), [
             'register_as' => 'sometimes|string|max:255',
@@ -87,19 +93,14 @@ class RegisterInController extends Controller
             'company' => 'sometimes|string|max:255',
             'job_title' => 'sometimes|string|max:255',
             'city' => 'sometimes|string|max:255',
-            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Image validation
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 400);
+            return redirect()->back()->withErrors($validator)->with('error', 'Validation error');
         }
 
         try {
-
             $data = $request->all();
 
             if ($request->hasFile('image')) {
@@ -112,45 +113,30 @@ class RegisterInController extends Controller
 
             $registerIn->update($data);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Updated successfully',
-                'register' => $registerIn
-            ]);
+            return redirect()->route('RegisterIn.index')->with('success', 'Updated successfully');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error: ' . $e->getMessage()
-            ], 500);
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
 
     public function destroy($id)
     {
-
-        $registerIn = registerIn::find($id);
+        $registerIn = RegisterIn::find($id);
 
         if (!$registerIn) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->route('RegisterIn.index')->with('error', 'Data not found');
         }
-
 
         try {
             if ($registerIn->image) {
-                Storage::disk('public')->delete($registerIn->image); // Delete image if exists
+                Storage::disk('public')->delete($registerIn->image);
             }
 
             $registerIn->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Deleted successfully'
-            ]);
+            return redirect()->route('RegisterIn.index')->with('success', 'Deleted successfully');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error: ' . $e->getMessage()
-            ], 500);
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
 }

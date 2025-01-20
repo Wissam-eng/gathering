@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Validator;
-
 use App\Models\supervisor_speech;
 use Illuminate\Http\Request;
 
@@ -11,26 +10,42 @@ class SupervisorSpeechController extends Controller
 {
     public function index()
     {
-
         $supervisor_speechs = supervisor_speech::all();
-        return response()->json(['success' => true, 'supervisor_speechs' => $supervisor_speechs]);
+        return view('supervisor_speech.index', compact('supervisor_speechs'));
     }
 
+
+    public function create()
+    {
+        return view('supervisor_speech.create');
+    }
+
+
+
+    public function edit($id)
+    {
+        $card = supervisor_speech::find($id);
+        if (!$card) {
+            return redirect()->back()->with('error', 'البيانات غير موجودة');
+        }
+
+        return view('supervisor_speech.edite')->with('card', $card);
+    }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,svg ,webp,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return redirect()->back()->withErrors($validator)->with('error', 'Validation error');
         }
 
         try {
-
+            $imagePath = null;
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('images/supervisor_speech', 'public');
                 $imagePath = 'storage/app/public/' . $imagePath;
@@ -39,29 +54,25 @@ class SupervisorSpeechController extends Controller
             $supervisor_speech = supervisor_speech::create([
                 'title' => $request->input('title'),
                 'description' => $request->input('description'),
-                'image' => $imagePath ?? null,
+                'image' => $imagePath,
                 'address' => $request->input('address'),
                 'date' => $request->input('date'),
                 'text' => $request->input('text'),
             ]);
 
-            return response()->json(['success' => 'تم إضافة البيانات بنجاح', 'data' => $supervisor_speech], 201);
+            return redirect()->route('supervisor_speech.index')->with('success', 'Supervisor speech added successfully');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء إضافة البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
 
-
     public function update(Request $request, $id)
     {
-
         $supervisor_speech = supervisor_speech::find($id);
 
         if (!$supervisor_speech) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->route('supervisor_speech.index')->with('error', 'Data not found');
         }
-
-        $input = $request->all();
 
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|string|max:255',
@@ -70,39 +81,42 @@ class SupervisorSpeechController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return redirect()->back()->withErrors($validator)->with('error', 'Validation error');
         }
 
         try {
+            $input = $request->all();
+
             if ($request->hasFile('image')) {
                 if ($supervisor_speech->image && file_exists(public_path('storage/' . $supervisor_speech->image))) {
                     unlink(public_path('storage/' . $supervisor_speech->image));
                 }
                 $imagePath = $request->file('image')->store('images/supervisor_speech', 'public');
-                $imagePath = 'storage/app/public/' . $imagePath;
-                $input['image'] = $imagePath;
+                $input['image'] = 'storage/app/public/' . $imagePath;
             }
+
             $supervisor_speech->update($input);
-            return response()->json(['success' => 'تم تعديل البيانات بنجاح', 'data' => $supervisor_speech]);
+
+            return redirect()->route('supervisor_speech.index')->with('success', 'Supervisor speech updated successfully');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء تعديل البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
-
 
     public function destroy($id)
     {
         $supervisor_speech = supervisor_speech::find($id);
 
         if (!$supervisor_speech) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->route('supervisor_speech.index')->with('error', 'Data not found');
         }
 
         try {
             $supervisor_speech->delete();
-            return response()->json(['success' => 'تم حذف البيانات بنجاح']);
+
+            return redirect()->route('supervisor_speech.index')->with('success', 'Supervisor speech deleted successfully');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء حذف البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
 }

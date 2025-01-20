@@ -6,16 +6,38 @@ use App\Models\partners;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-
 class PartnersController extends Controller
 {
     public function index()
     {
-
-        $partnerss = partners::all();
-        return response()->json(['success' => true, 'partnerss' => $partnerss]);
+        try {
+            $partnerss = partners::all();
+            return view('partners.index', compact('partnerss'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'حدث خطأ أثناء جلب البيانات: ' . $e->getMessage());
+        }
     }
 
+
+
+
+
+    public function create()
+    {
+        return view('partners.create');
+    }
+
+
+
+    public function edit($id)
+    {
+        $card = partners::find($id);
+        if (!$card) {
+            return redirect()->back()->with('error', 'البيانات غير موجودة');
+        }
+
+        return view('partners.edite')->with('card', $card);
+    }
 
     public function store(Request $request)
     {
@@ -25,7 +47,7 @@ class PartnersController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return redirect()->back()->withErrors($validator)->with('error', 'التحقق من البيانات فشل');
         }
 
         try {
@@ -39,66 +61,53 @@ class PartnersController extends Controller
             }
 
             foreach ($imagePaths as $imagePath) {
-                $gallery =  partners::create([
+                partners::create([
                     'image' => $imagePath,
                 ]);
             }
 
-            return response()->json(['success' => 'تم إضافة البيانات بنجاح', 'data' => $imagePaths], 201);
+            return redirect()->route('partners.index')->with('success', 'تم إضافة البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء إضافة البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء إضافة البيانات: ' . $e->getMessage());
         }
     }
-
-
 
     public function update(Request $request, $id)
     {
         $partners = partners::find($id);
 
         if (!$partners) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->route('partners.index')->with('error', 'البيانات غير موجودة');
         }
 
-        $input = $request->all();
-
         $validator = Validator::make($request->all(), [
-            'images' => 'array|min:1',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'images' => 'image|mimes:jpeg,png,svg,webp,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return redirect()->back()->withErrors($validator)->with('error', 'التحقق من البيانات فشل');
         }
 
         try {
             if ($request->hasFile('images')) {
-                foreach ($partners->get() as $item) {
-                    if (file_exists(public_path('storage/' . $item->image))) {
-                        unlink(public_path('storage/' . $item->image));
-                    }
+                if (file_exists(public_path('storage/' . $partners->image))) {
+                    unlink(public_path('storage/' . $partners->image));
                 }
 
-                $imagePaths = [];
+                $image = $request->file('images');
+                $imagePath = $image->store('images/partners', 'public');
+                $imagePath = 'storage/app/public/' . $imagePath;
 
-                foreach ($request->file('images') as $image) {
-                    $imagePath = $image->store('images/partners', 'public');
-                    $imagePaths[] = 'storage/app/public/' . $imagePath;
-                }
-
-                foreach ($imagePaths as $imagePath) {
-                    $partners->update([
-                        'image' => $imagePath,
-                    ]);
-                }
+                $partners->update([
+                    'image' => $imagePath,
+                ]);
             }
 
-            return response()->json(['success' => 'تم تعديل البيانات بنجاح', 'data' => $partners]);
+            return redirect()->route('partners.index')->with('success', 'تم تعديل البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء تعديل البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء تعديل البيانات: ' . $e->getMessage());
         }
     }
-
 
 
     public function destroy($id)
@@ -106,14 +115,14 @@ class PartnersController extends Controller
         $partners = partners::find($id);
 
         if (!$partners) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->route('partners.index')->with('error', 'البيانات غير موجودة');
         }
 
         try {
             $partners->delete();
-            return response()->json(['success' => 'تم حذف البيانات بنجاح']);
+            return redirect()->route('partners.index')->with('success', 'تم حذف البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء حذف البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء حذف البيانات: ' . $e->getMessage());
         }
     }
 }

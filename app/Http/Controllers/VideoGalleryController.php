@@ -5,52 +5,59 @@ namespace App\Http\Controllers;
 use App\Models\video_gallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
 use Illuminate\Support\Facades\Log;
-
 use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;
-
 use getID3;
-
-
-
 
 class VideoGalleryController extends Controller
 {
     public function index()
     {
-
         $video_gallerys = video_gallery::all();
-        return response()->json(['success' => true, 'video_gallerys' => $video_gallerys]);
+        return view('video_gallery.index', compact('video_gallerys'));
+    }
+
+
+    public function create()
+    {
+        return view('video_gallery.create');
     }
 
 
 
+    public function edit($id)
+    {
 
+        $card = video_gallery::find($id);
+        if (!$card) {
+            return redirect()->back()->with('error', 'البيانات غير موجودة');
+        }
+
+        return view('video_gallery.edite')->with('card', $card);
+    }
 
     public function store(Request $request)
     {
-
-
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'title' => 'required|array|min:1',
             'title.*' => 'required|string|max:255',
             'video' => 'required|array|min:1',
             'video.*' => 'required|mimes:mp4,mov,avi,wmv,flv,mkv|max:10000',
             'images' => 'required|array|min:1',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'images.*' => 'image|mimes:jpeg,png,svg,webp,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return redirect()->back()->withErrors($validator)->with('error', 'Validation failed');
         }
 
         if (
             count($request->input('title')) !== count($request->file('video')) ||
             count($request->file('video')) !== count($request->file('images'))
         ) {
-            return response()->json(['error' => 'عدد العناوين، الفيديوهات والصور لا يتطابق.'], 400);
+            return redirect()->back()->with('error', 'The number of titles, videos, and images do not match');
         }
 
         try {
@@ -58,135 +65,111 @@ class VideoGalleryController extends Controller
             $getID3 = new getID3();
 
             foreach ($request->file('video') as $index => $video) {
-                // حفظ الفيديو
-                $videoPath = $video->store('video/video_gallery', 'public');
-                $fullVideoPath = storage_path('app/public/' . $videoPath);
+                $videoPath = $video->store('images/video_gallery/video', 'public');
+                $fullVideoPath =  $videoPath;
 
-                // حساب مدة الفيديو
                 $fileInfo = $getID3->analyze($fullVideoPath);
                 $duration = $fileInfo['playtime_seconds'] ?? 0;
 
-                // حفظ الصورة
                 $image = $request->file('images')[$index];
-                $imagePath = $image->store('images/video_gallery', 'public');
+                $imagePath = $image->store('images/video_gallery/imgs', 'public');
 
-                // تخزين البيانات
+
                 $data[] = [
-                    'video' => 'storage/video/video_gallery/' . $videoPath,
-                    'images' => 'storage/images/video_gallery/' . $imagePath,
+                    'video' => 'storage/app/public/'  . $videoPath,
+                    'images' => 'storage/app/public/'  . $imagePath,
                     'duration' => round($duration),
                     'title' => $request->input('title')[$index],
                 ];
             }
 
-            // حفظ البيانات في قاعدة البيانات
+
+
             foreach ($data as $item) {
                 video_gallery::create($item);
             }
 
-            return response()->json(['success' => 'تم إضافة البيانات بنجاح', 'data' => $data], 201);
+            return redirect()->route('video_gallery.index')->with('success', 'Data added successfully');
         } catch (\Exception $e) {
             Log::error('Error storing video: ' . $e->getMessage());
-            return response()->json(['error' => 'حدث خطأ أثناء إضافة البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
 
-
-
-
-
-
-
-
     public function update(Request $request, $id)
     {
-
-     
         $video_gallery = video_gallery::find($id);
 
         if (!$video_gallery) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->route('video_gallery.index')->with('error', 'Data not found');
         }
 
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'images' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'video' => 'nullable|mimes:mp4,mov,avi,wmv,flv,mkv|max:10000',
+
+            'title' => 'sometimes|string|max:255',
+
+            'video' => 'sometimes|mimes:mp4,mov,avi,wmv,flv,mkv|max:10000',
+
+            'images' => 'image|mimes:jpeg,svg,webp,png,jpg,gif|max:2048',
         ]);
 
+
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return redirect()->back()->withErrors($validator)->with('error', 'Validation failed');
         }
 
         try {
             $input = $request->all();
 
-            // تحديث الصورة إذا تم رفع صورة جديدة
             if ($request->hasFile('images')) {
-                // حذف الصورة القديمة إذا كانت موجودة
                 if ($video_gallery->image && file_exists(public_path($video_gallery->image))) {
                     unlink(public_path($video_gallery->image));
                 }
 
-                // رفع الصورة الجديدة
                 $imagePath = $request->file('images')->store('images/video_gallery', 'public');
                 $input['image'] = 'storage/images/video_gallery/' . $imagePath;
             } else {
-                $input['image'] = $video_gallery->image; // الاحتفاظ بالصورة القديمة إذا لم يتم رفع صورة جديدة
+                $input['image'] = $video_gallery->image;
             }
 
-            // تحديث الفيديو إذا تم رفع فيديو جديد
             if ($request->hasFile('video')) {
-                // حذف الفيديو القديم إذا كان موجودًا
                 if ($video_gallery->video && file_exists(public_path($video_gallery->video))) {
                     unlink(public_path($video_gallery->video));
                 }
 
-                // رفع الفيديو الجديد
                 $videoPath = $request->file('video')->store('video/video_gallery', 'public');
                 $fullPath = storage_path('app/public/' . $videoPath);
 
-                // استخراج مدة الفيديو
                 $getID3 = new getID3();
                 $fileInfo = $getID3->analyze($fullPath);
                 $input['duration'] = $fileInfo['playtime_seconds'] ?? 0;
                 $input['video'] = 'storage/video/video_gallery/' . $videoPath;
             } else {
-                $input['video'] = $video_gallery->video; // الاحتفاظ بالفيديو القديم إذا لم يتم رفع فيديو جديد
-                $input['duration'] = $video_gallery->duration; // الاحتفاظ بالمدة القديمة
+                $input['video'] = $video_gallery->video;
+                $input['duration'] = $video_gallery->duration;
             }
 
-            // تحديث البيانات في قاعدة البيانات
-            $video_gallery->update([
-                'title' => $input['title'],
-                'image' => $input['image'],
-                'video' => $input['video'],
-                'duration' => $input['duration'],
-            ]);
+            $video_gallery->update($input);
 
-            return response()->json(['success' => 'تم تعديل البيانات بنجاح', 'data' => $video_gallery]);
+            return redirect()->route('video_gallery.index')->with('success', 'Data updated successfully');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء تعديل البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
-
-
-
-
 
     public function destroy($id)
     {
         $video_gallery = video_gallery::find($id);
 
         if (!$video_gallery) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->route('video_gallery.index')->with('error', 'Data not found');
         }
 
         try {
             $video_gallery->delete();
-            return response()->json(['success' => 'تم حذف البيانات بنجاح']);
+            return redirect()->route('video_gallery.index')->with('success', 'Data deleted successfully');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء حذف البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
 }

@@ -6,15 +6,37 @@ use App\Models\goals;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-
 class GoalsController extends Controller
 {
     public function index()
     {
-
-        $goalss = goals::all();
-        return response()->json(['success' => true, 'goalss' => $goalss]);
+        try {
+            $goals = goals::all();
+            return view('goals.index', compact('goals'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'حدث خطأ أثناء جلب البيانات: ' . $e->getMessage());
+        }
     }
+
+
+
+    public function create()
+    {
+        return view('goals.create');
+    }
+
+
+
+    public function edit($id)
+    {
+        $card = goals::find($id);
+        if (!$card) {
+            return redirect()->back()->with('error', 'البيانات غير موجودة');
+        }
+
+        return view('goals.edite')->with('card', $card);
+    }
+
 
 
     public function store(Request $request)
@@ -22,15 +44,14 @@ class GoalsController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,svg,webp,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return redirect()->back()->withErrors($validator)->with('error', 'التحقق من البيانات فشل');
         }
 
         try {
-
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('images/goals', 'public');
                 $imagePath = 'storage/app/public/' . $imagePath;
@@ -45,64 +66,64 @@ class GoalsController extends Controller
                 'text' => $request->input('text'),
             ]);
 
-            return response()->json(['success' => 'تم إضافة البيانات بنجاح', 'data' => $goals], 201);
+            return redirect()->route('goals.index')->with('success', 'تم إضافة البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء إضافة البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء إضافة البيانات: ' . $e->getMessage());
         }
     }
 
-
     public function update(Request $request, $id)
     {
-
         $goals = goals::find($id);
 
         if (!$goals) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->route('goals.index')->with('error', 'البيانات غير موجودة');
         }
-
-        $input = $request->all();
 
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,svg,webp,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return redirect()->back()->withErrors($validator)->with('error', 'التحقق من البيانات فشل');
         }
 
         try {
+
+            $input = $request->except('image');
             if ($request->hasFile('image')) {
                 if ($goals->image && file_exists(public_path('storage/' . $goals->image))) {
                     unlink(public_path('storage/' . $goals->image));
                 }
                 $imagePath = $request->file('image')->store('images/goals', 'public');
                 $imagePath = 'storage/app/public/' . $imagePath;
-                $input['image'] = $imagePath;
+                $goals->image = $imagePath;
             }
+
+
             $goals->update($input);
-            return response()->json(['success' => 'تم تعديل البيانات بنجاح', 'data' => $goals]);
+
+            return redirect()->route('goals.index')->with('success', 'تم تعديل البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء تعديل البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء تعديل البيانات: ' . $e->getMessage());
         }
     }
-
 
     public function destroy($id)
     {
         $goals = goals::find($id);
 
         if (!$goals) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->route('goals.index')->with('error', 'البيانات غير موجودة');
         }
 
         try {
             $goals->delete();
-            return response()->json(['success' => 'تم حذف البيانات بنجاح']);
+            return redirect()->route('goals.index')->with('success', 'تم حذف البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء حذف البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء حذف البيانات: ' . $e->getMessage());
         }
     }
 }

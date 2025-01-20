@@ -12,10 +12,30 @@ class ContctFooterController extends Controller
     {
         try {
             $contct_footers = contct_footer::all();
-            return response()->json(['success' => true, 'contct_footer' => $contct_footers]);
+            return view('contct_footer.index', compact('contct_footers'));
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء جلب البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء جلب البيانات: ' . $e->getMessage());
         }
+    }
+
+
+
+
+    public function create()
+    {
+        return view('contct_footer.create');
+    }
+
+
+
+    public function edit($id)
+    {
+        $card = contct_footer::find($id);
+        if (!$card) {
+            return redirect()->back()->with('error', 'البيانات غير موجودة');
+        }
+
+        return view('contct_footer.edite')->with('card', $card);
     }
 
 
@@ -23,9 +43,9 @@ class ContctFooterController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'location' => 'nullable|string',
-            'phone' => 'nullable|array',
-            'whatsapp' => 'nullable|array',
+            'location' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:255',
+            'whatsapp' =>  'nullable|string|max:255',
             'email' => 'nullable|string|email',
             'website' => 'nullable|string|url',
             'facebook' => 'nullable|string|url',
@@ -34,16 +54,15 @@ class ContctFooterController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return redirect()->back()->withErrors($validator)->with('error', 'التحقق من البيانات فشل');
         }
 
         try {
-            $phoneNumbers = $request->input('phone') ? implode(',', $request->input('phone')) : null;
-            $whatsappNumbers = $request->input('whatsapp') ? implode(',', $request->input('whatsapp')) : null;
+
 
             $contactFooter = contct_footer::create([
-                'phone' => $phoneNumbers,
-                'whatsapp' => $whatsappNumbers,
+                'phone' => $request->input('phone'),
+                'whatsapp' => $request->input('whatsapp'),
                 'location' => $request->input('location'),
                 'email' => $request->input('email'),
                 'website' => $request->input('website'),
@@ -52,28 +71,24 @@ class ContctFooterController extends Controller
                 'twitter' => $request->input('twitter'),
             ]);
 
-            return response()->json(['success' => 'تم إضافة البيانات بنجاح', 'data' => $contactFooter], 201);
+            return redirect()->route('contct_footer.index')->with('success', 'تم إضافة البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء إضافة البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء إضافة البيانات: ' . $e->getMessage());
         }
     }
-
-
-
-
 
     public function update(Request $request, $id)
     {
         $contactFooter = contct_footer::find($id);
 
         if (!$contactFooter) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->route('contct_footer.index')->with('error', 'البيانات غير موجودة');
         }
 
         $validator = Validator::make($request->all(), [
-            'location' => 'nullable|string',
-            'phone' => 'nullable|array',
-            'whatsapp' => 'nullable|array',
+            'location' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:255',
+            'whatsapp' =>  'nullable|string|max:255',
             'email' => 'nullable|string|email',
             'website' => 'nullable|string|url',
             'facebook' => 'nullable|string|url',
@@ -82,44 +97,42 @@ class ContctFooterController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return redirect()->back()->withErrors($validator)->with('error', 'التحقق من البيانات فشل');
         }
 
         try {
-            $phoneNumbers = $request->input('phone') ? implode(',', $request->input('phone')) : $contactFooter->phone;
-            $whatsappNumbers = $request->input('whatsapp') ? implode(',', $request->input('whatsapp')) : $contactFooter->whatsapp;
+          
 
             $contactFooter->update([
-                'location' => $request->input('location', $contactFooter->location),
-                'phone' => $phoneNumbers,
-                'whatsapp' => $whatsappNumbers,
-                'email' => $request->input('email', $contactFooter->email),
-                'website' => $request->input('website', $contactFooter->website),
-                'facebook' => $request->input('facebook', $contactFooter->facebook),
-                'instagram' => $request->input('instagram', $contactFooter->instagram),
-                'twitter' => $request->input('twitter', $contactFooter->twitter),
+                'phone' => $request->input('phone'),
+                'whatsapp' => $request->input('whatsapp'),
+                'location' => $request->input('location'),
+                'email' => $request->input('email'),
+                'website' => $request->input('website'),
+                'facebook' => $request->input('facebook'),
+                'instagram' => $request->input('instagram'),
+                'twitter' => $request->input('twitter'),
             ]);
 
-            return response()->json(['success' => 'تم تعديل البيانات بنجاح', 'data' => $contactFooter]);
+            return redirect()->route('contct_footer.index')->with('success', 'تم تعديل البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء تعديل البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء تعديل البيانات: ' . $e->getMessage());
         }
     }
 
-
     public function destroy($id)
     {
-        $contct_footer = contct_footer::find($id);
+        $contactFooter = contct_footer::find($id);
 
-        if (!$contct_footer) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+        if (!$contactFooter) {
+            return redirect()->route('contct_footer.index')->with('error', 'البيانات غير موجودة');
         }
 
         try {
-            $contct_footer->delete();
-            return response()->json(['success' => 'تم حذف البيانات بنجاح']);
+            $contactFooter->delete();
+            return redirect()->route('contct_footer.index')->with('success', 'تم حذف البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء حذف البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء حذف البيانات: ' . $e->getMessage());
         }
     }
 }

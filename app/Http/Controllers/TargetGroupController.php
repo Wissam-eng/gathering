@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Validator;
-
 use App\Models\target_group;
 use Illuminate\Http\Request;
 
@@ -11,82 +10,93 @@ class TargetGroupController extends Controller
 {
     public function index()
     {
-
         $target_groups = target_group::all();
-        return response()->json(['success' => true, 'target_groups' => $target_groups]);
+        return view('target_group.index', compact('target_groups'));
     }
+
+
+
+    public function create()
+    {
+        return view('target_group.create');
+    }
+
+
+
+    public function edit($id)
+    {
+        $card = target_group::find($id);
+        if (!$card) {
+            return redirect()->back()->with('error', 'البيانات غير موجودة');
+        }
+
+        return view('target_group.edite')->with('card', $card);
+    }
+
+
+
+
 
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|string|max:255',
-
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return redirect()->back()->withErrors($validator)->with('error', 'Validation error');
         }
 
         try {
-
-
-
             $target_group = target_group::create([
                 'title' => $request->input('title'),
-
             ]);
 
-            return response()->json(['success' => 'تم إضافة البيانات بنجاح', 'data' => $target_group], 201);
+            return redirect()->route('target_group.index')->with('success', 'Target group added successfully');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء إضافة البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
-
 
     public function update(Request $request, $id)
     {
-
         $target_group = target_group::find($id);
 
         if (!$target_group) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->route('target_group.index')->with('error', 'Data not found');
         }
-
-        $input = $request->all();
 
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|string|max:255',
-
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return redirect()->back()->withErrors($validator)->with('error', 'Validation error');
         }
 
         try {
+            $target_group->update($request->all());
 
-            $target_group->update($input);
-            return response()->json(['success' => 'تم تعديل البيانات بنجاح', 'data' => $target_group]);
+            return redirect()->route('target_group.index')->with('success', 'Target group updated successfully');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء تعديل البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
-
 
     public function destroy($id)
     {
         $target_group = target_group::find($id);
 
         if (!$target_group) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->route('target_group.index')->with('error', 'Data not found');
         }
 
         try {
             $target_group->delete();
-            return response()->json(['success' => 'تم حذف البيانات بنجاح']);
+            return redirect()->route('target_group.index')->with('success', 'Target group deleted successfully');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء حذف البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
 }

@@ -4,25 +4,51 @@ namespace App\Http\Controllers;
 
 use App\Models\Latest_news;
 use Illuminate\Support\Facades\Validator;
-
 use Illuminate\Http\Request;
 
 class LatestNewsController extends Controller
 {
     public function index()
     {
-
-        $Latest_newss = Latest_news::all();
-        return response()->json(['success' => true, 'Latest_newss' => $Latest_newss]);
+        try {
+            $Latest_newss = Latest_news::all();
+            return view('latest_news.index', compact('Latest_newss'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'حدث خطأ أثناء جلب البيانات: ' . $e->getMessage());
+        }
     }
+
+
+
+
+
+
+    public function create()
+    {
+        return view('Latest_news.create');
+    }
+
+
+
+    public function edit($id)
+    {
+        $card = Latest_news::find($id);
+        if (!$card) {
+            return redirect()->back()->with('error', 'البيانات غير موجودة');
+        }
+
+        return view('Latest_news.edite')->with('card', $card);
+    }
+
+
+
+
+
+
 
 
     public function store(Request $request)
     {
-
-
-        // dd($request->all());
-
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
@@ -31,10 +57,11 @@ class LatestNewsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return redirect()->back()->withErrors($validator)->with('error', 'التحقق من البيانات فشل');
         }
 
         try {
+            $imagePath = null;
 
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('images/Latest_news', 'public');
@@ -46,26 +73,21 @@ class LatestNewsController extends Controller
                 'description' => $request->input('description'),
                 'image' => $imagePath ?? null,
                 'date' => $request->input('date'),
-
             ]);
 
-            return response()->json(['success' => 'تم إضافة البيانات بنجاح', 'data' => $Latest_news], 201);
+            return redirect()->route('latest_news.index')->with('success', 'تم إضافة البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء إضافة البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء إضافة البيانات: ' . $e->getMessage());
         }
     }
 
-
     public function update(Request $request, $id)
     {
-
         $Latest_news = Latest_news::find($id);
 
         if (!$Latest_news) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->route('latest_news.index')->with('error', 'البيانات غير موجودة');
         }
-
-        $input = $request->all();
 
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|string|max:255',
@@ -75,39 +97,41 @@ class LatestNewsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return redirect()->back()->withErrors($validator)->with('error', 'التحقق من البيانات فشل');
         }
 
         try {
+            $input = $request->all();
+
             if ($request->hasFile('image')) {
                 if ($Latest_news->image && file_exists(public_path('storage/' . $Latest_news->image))) {
                     unlink(public_path('storage/' . $Latest_news->image));
                 }
                 $imagePath = $request->file('image')->store('images/Latest_news', 'public');
-                $imagePath = 'storage/app/public/' . $imagePath;
-                $input['image'] = $imagePath;
+                $input['image'] = 'storage/app/public/' . $imagePath;
             }
+
             $Latest_news->update($input);
-            return response()->json(['success' => 'تم تعديل البيانات بنجاح', 'data' => $Latest_news]);
+
+            return redirect()->route('latest_news.index')->with('success', 'تم تعديل البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء تعديل البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء تعديل البيانات: ' . $e->getMessage());
         }
     }
-
 
     public function destroy($id)
     {
         $Latest_news = Latest_news::find($id);
 
         if (!$Latest_news) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->route('latest_news.index')->with('error', 'البيانات غير موجودة');
         }
 
         try {
             $Latest_news->delete();
-            return response()->json(['success' => 'تم حذف البيانات بنجاح']);
+            return redirect()->route('latest_news.index')->with('success', 'تم حذف البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء حذف البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء حذف البيانات: ' . $e->getMessage());
         }
     }
 }

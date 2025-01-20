@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('contct_footers', function (Blueprint $table) {
             $table->id();
             $table->string('location')->nullable();
-            $table->json('phone')->nullable();
-            $table->json('whatsapp')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('whatsapp')->nullable();
             $table->string('email')->nullable();
             $table->string('website')->nullable();
             $table->string('facebook')->nullable();

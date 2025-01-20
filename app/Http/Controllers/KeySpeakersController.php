@@ -6,16 +6,37 @@ use App\Models\Key_speakers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-
 class KeySpeakersController extends Controller
 {
     public function index()
     {
-
-        $Key_speakerss = Key_speakers::all();
-        return response()->json(['success' => true, 'Key_speakerss' => $Key_speakerss]);
+        try {
+            $Key_speakerss = Key_speakers::all();
+            return view('key_speakers.index', compact('Key_speakerss'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'حدث خطأ أثناء جلب البيانات: ' . $e->getMessage());
+        }
     }
 
+
+
+
+    public function create()
+    {
+        return view('Key_speakers.create');
+    }
+
+
+
+    public function edit($id)
+    {
+        $card = Key_speakers::find($id);
+        if (!$card) {
+            return redirect()->back()->with('error', 'البيانات غير موجودة');
+        }
+
+        return view('Key_speakers.edite')->with('card', $card);
+    }
 
     public function store(Request $request)
     {
@@ -23,12 +44,12 @@ class KeySpeakersController extends Controller
             'name' => 'sometimes|string|max:255',
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,svg,webp,jpg,gif|max:2048',
             'file' => 'nullable|mimes:pdf,xlsx,doc,docx,txt|max:2048',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return redirect()->back()->withErrors($validator)->with('error', 'التحقق من البيانات فشل');
         }
 
         try {
@@ -56,9 +77,9 @@ class KeySpeakersController extends Controller
                 'text' => $request->input('text'),
             ]);
 
-            return response()->json(['success' => 'تم إضافة البيانات بنجاح', 'data' => $Key_speakers], 201);
+            return redirect()->route('key_speakers.index')->with('success', 'تم إضافة البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء إضافة البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء إضافة البيانات: ' . $e->getMessage());
         }
     }
 
@@ -67,19 +88,19 @@ class KeySpeakersController extends Controller
         $Key_speakers = Key_speakers::find($id);
 
         if (!$Key_speakers) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->route('key_speakers.index')->with('error', 'البيانات غير موجودة');
         }
 
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|string|max:255',
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,svg ,webp,png,jpg,gif|max:2048',
             'file' => 'nullable|mimes:pdf,xlsx,doc,docx,txt|max:2048',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return redirect()->back()->withErrors($validator)->with('error', 'التحقق من البيانات فشل');
         }
 
         try {
@@ -91,7 +112,6 @@ class KeySpeakersController extends Controller
                 }
                 $imagePath = $request->file('image')->store('images/Key_speakers', 'public');
                 $input['image'] =  'storage/app/public/' . $imagePath;
-
             }
 
             if ($request->hasFile('file')) {
@@ -104,27 +124,25 @@ class KeySpeakersController extends Controller
 
             $Key_speakers->update($input);
 
-            return response()->json(['success' => 'تم تعديل البيانات بنجاح', 'data' => $Key_speakers]);
+            return redirect()->route('key_speakers.index')->with('success', 'تم تعديل البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء تعديل البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء تعديل البيانات: ' . $e->getMessage());
         }
     }
-
-
 
     public function destroy($id)
     {
         $Key_speakers = Key_speakers::find($id);
 
         if (!$Key_speakers) {
-            return response()->json(['error' => 'البيانات غير موجودة'], 404);
+            return redirect()->route('key_speakers.index')->with('error', 'البيانات غير موجودة');
         }
 
         try {
             $Key_speakers->delete();
-            return response()->json(['success' => 'تم حذف البيانات بنجاح']);
+            return redirect()->route('key_speakers.index')->with('success', 'تم حذف البيانات بنجاح');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'حدث خطأ أثناء حذف البيانات: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء حذف البيانات: ' . $e->getMessage());
         }
     }
 }
