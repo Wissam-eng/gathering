@@ -48,7 +48,7 @@
                 <label for="ctnFile">Upload file</label>
                 <input id="ctnFile" type="file" name="file"
                     class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
-                    required />
+                     />
             </div>
             <button type="submit" class="btn btn-primary !mt-6">Submit</button>
         </form>

@@ -23,7 +23,7 @@ class KeySpeakersController extends Controller
 
     public function create()
     {
-        return view('Key_speakers.create');
+        return view('key_speakers.create');
     }
 
 
@@ -35,22 +35,26 @@ class KeySpeakersController extends Controller
             return redirect()->back()->with('error', 'البيانات غير موجودة');
         }
 
-        return view('Key_speakers.edite')->with('card', $card);
+        return view('key_speakers.edite')->with('card', $card);
     }
+
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // dd($request->all());
+       $validator = Validator::make($request->all(), [
             'name' => 'sometimes|string|max:255',
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
-            'image' => 'nullable|image|mimes:jpeg,png,svg,webp,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,svg,webp,png,jpg,gif|max:2048',
             'file' => 'nullable|mimes:pdf,xlsx,doc,docx,txt|max:2048',
         ]);
 
+
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->with('error', 'التحقق من البيانات فشل');
+            return redirect()->back()->withErrors($validator)->with('error', $validator->fails() .'التحقق من البيانات فشل');
         }
+        
 
         try {
             $imagePath = null;
@@ -70,11 +74,11 @@ class KeySpeakersController extends Controller
                 'title' => $request->input('title'),
                 'name' => $request->input('name'),
                 'description' => $request->input('description'),
-                'image' => $imagePath,
-                'file' => $filePath,
-                'address' => $request->input('address'),
-                'date' => $request->input('date'),
-                'text' => $request->input('text'),
+                'image' => $imagePath ?? null,
+                'file' => $filePath ?? null,
+                // 'address' => $request->input('address'),
+                // 'date' => $request->input('date'),
+                // 'text' => $request->input('text'),
             ]);
 
             return redirect()->route('key_speakers.index')->with('success', 'تم إضافة البيانات بنجاح');

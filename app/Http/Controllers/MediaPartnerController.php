@@ -25,7 +25,7 @@ class MediaPartnerController extends Controller
 
     public function create()
     {
-        return view('Media_partner.create');
+        return view('media_partner.create');
     }
 
 
@@ -37,7 +37,7 @@ class MediaPartnerController extends Controller
             return redirect()->back()->with('error', 'البيانات غير موجودة');
         }
 
-        return view('Media_partner.edite')->with('card', $card);
+        return view('media_partner.edite')->with('card', $card);
     }
 
 

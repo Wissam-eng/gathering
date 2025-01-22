@@ -246,7 +246,7 @@ class HomeController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,svg,webp,png,jpg,gif|max:2048',
             'address' => 'nullable|string',
             'date' => 'nullable|date',
             'text' => 'nullable|string',

@@ -25,7 +25,7 @@ class LatestNewsController extends Controller
 
     public function create()
     {
-        return view('Latest_news.create');
+        return view('latest_news.create');
     }
 
 
@@ -37,7 +37,7 @@ class LatestNewsController extends Controller
             return redirect()->back()->with('error', 'البيانات غير موجودة');
         }
 
-        return view('Latest_news.edite')->with('card', $card);
+        return view('latest_news.edite')->with('card', $card);
     }
 
 

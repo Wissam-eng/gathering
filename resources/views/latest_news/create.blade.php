@@ -25,7 +25,7 @@
 
             <!-- basic -->
             <div x-data="form">
-                <input id="basic" type="text" x-model="date1" class="form-input" />
+                <input id="basic" type="text" name="date" x-model="date1" class="form-input" />
             </div>
 
 

@@ -313,7 +313,7 @@
                             <img class="ml-[5px] w-8 flex-none"
                                 src="{{ url('resources/views/main/assets/images/logo.svg') }}" alt="image" />
                             <span
-                                class="align-middle text-2xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline">Gathering</span>
+                                class="align-middle text-2xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline">Championship</span>
                         </a>
                         <a href="javascript:;"
                             class="collapse-icon flex h-8 w-8 items-center rounded-full transition duration-300 hover:bg-gray-500/10 rtl:rotate-180 dark:text-white-light dark:hover:bg-dark-light/10"
@@ -958,7 +958,7 @@
                                 <ul x-cloak x-show="activeDropdown === 'dashboard'" x-collapse
                                     class="sub-menu text-gray-500">
                                     <li><a href="{{ route('members') }}" class="active">show</a></li>
-                                    <li><a href="{{ route('register') }}">add</a></li>
+                                    <!--<li><a href="{{ route('register') }}">add</a></li>-->
 
                                 </ul>
                             </li>
