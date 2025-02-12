@@ -299,7 +299,7 @@
                 class="sidebar fixed bottom-0 top-0 z-50 h-full min-h-screen w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-all duration-300">
                 <div class="h-full bg-white dark:bg-[#0e1726]">
                     <div class="flex items-center justify-between px-4 py-3">
-                        <a href="index.html" class="main-logo flex shrink-0 items-center">
+                        <a href="{{ url('main') }}" class="main-logo flex shrink-0 items-center">
                             <img class="ml-[5px] w-8 flex-none"
                                 src="{{ url('resources/views/main/assets/images/logo.svg') }}" alt="image" />
                             <span
@@ -1061,7 +1061,7 @@
                 <div class="shadow-sm">
                     <div class="relative flex w-full items-center bg-white px-5 py-2.5 dark:bg-[#0e1726]">
                         <div class="horizontal-logo flex items-center justify-between ltr:mr-2 rtl:ml-2 lg:hidden">
-                            <a href="index.html" class="main-logo flex shrink-0 items-center">
+                            <a href="{{ url('main') }}" class="main-logo flex shrink-0 items-center">
                                 <img class="inline w-8 ltr:-ml-1 rtl:-mr-1"
                                     src="{{ url('resources/views/main/assets/images/logo.svg') }}"
                                     alt="image" />
