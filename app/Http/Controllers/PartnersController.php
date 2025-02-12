@@ -41,7 +41,11 @@ class PartnersController extends Controller
 
     public function store(Request $request)
     {
+        
+       
         $validator = Validator::make($request->all(), [
+            'title' => 'nullable|string',
+            'description' => 'nullable|string',
             'images' => 'required|array|min:1',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -62,6 +66,8 @@ class PartnersController extends Controller
 
             foreach ($imagePaths as $imagePath) {
                 partners::create([
+                    'title' => $request->title,
+                    'description' => $request->description,
                     'image' => $imagePath,
                 ]);
             }
@@ -74,6 +80,8 @@ class PartnersController extends Controller
 
     public function update(Request $request, $id)
     {
+        
+        //  dd($request->title);
         $partners = partners::find($id);
 
         if (!$partners) {
@@ -81,6 +89,8 @@ class PartnersController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
+            'title' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:2000',
             'images' => 'image|mimes:jpeg,png,svg,webp,jpg,gif|max:2048',
         ]);
 
@@ -89,6 +99,8 @@ class PartnersController extends Controller
         }
 
         try {
+            
+            
             if ($request->hasFile('images')) {
                 if (file_exists(public_path('storage/' . $partners->image))) {
                     unlink(public_path('storage/' . $partners->image));
@@ -99,9 +111,15 @@ class PartnersController extends Controller
                 $imagePath = 'storage/app/public/' . $imagePath;
 
                 $partners->update([
+                    'title' => $request->title,
+                    'description' => $request->description,
                     'image' => $imagePath,
                 ]);
             }
+                $partners->update([
+                    'title' => $request->title,
+                    'description' => $request->description,
+                ]);
 
             return redirect()->route('partners.index')->with('success', 'تم تعديل البيانات بنجاح');
         } catch (\Exception $e) {

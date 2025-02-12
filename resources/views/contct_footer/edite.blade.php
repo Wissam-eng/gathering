@@ -125,6 +125,15 @@
                 <hr>
 
 
+                <div>
+                    <label for="ctnEmail">Newsletter</label>
+                    <h2 class="text-[#3b3f5c] text-lg font-semibold dark:text-white-light">
+                        {{ $card->Newsletter }}
+                    </h2>
+                </div>
+                <hr>
+
+
 
             </div>
         </div>
@@ -152,6 +161,8 @@
                     <input type="url" name="instagram" value="{{ $card->instagram }}" placeholder="instagram"
                         class="form-input">
                     <input type="url" name="twitter" value="{{ $card->twitter }}" placeholder="twitter"
+                        class="form-input">
+                    <input type="text" name="Newsletter" value="{{ $card->Newsletter }}" placeholder="Newsletter"
                         class="form-input">
                 </div>
             </div>

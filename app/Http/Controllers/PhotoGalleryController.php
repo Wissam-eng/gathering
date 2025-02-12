@@ -17,8 +17,10 @@ class PhotoGalleryController extends Controller
                 ->groupBy('code') // تجميع العناصر حسب الكود
                 ->map(function ($group, $code) {
                     return [
+                        // الكود كعنصر رئيسي
                         'code' => $code,            // الكود كعنصر رئيسي
-                        'cover' => $group->first()->cover, // أول غلاف (يُفترض أن كل مجموعة لها غلاف واحد فقط)
+                        'cover' => $group->first()->cover,
+                        'title' => $group->first()->title,
                         'images' => $group->pluck('image')->toArray(), // كل الصور المتعلقة بالكود
                     ];
                 })
@@ -59,6 +61,7 @@ class PhotoGalleryController extends Controller
                     return [
                         'code' => $code,
                         'cover' => $group->first()->cover,
+                        'title' => $group->first()->title,
                         'images' => $group->pluck('image')->toArray(),
                     ];
                 })
@@ -66,7 +69,7 @@ class PhotoGalleryController extends Controller
 
 
 
-            return view('photo_gallery.edite')->with('card' , $card);
+            return view('photo_gallery.edite')->with('card', $card);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء جلب البيانات: ' . $e->getMessage());
         }
@@ -77,17 +80,15 @@ class PhotoGalleryController extends Controller
 
     public function store(Request $request)
     {
-
-
-
         $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
             'images' => 'required|array|min:1',
-            'images.*' => 'image|mimes:jpeg,png,svg,webp,jpg,gif|max:2048',
-            'cover' => 'required|image|mimes:jpeg,svg,webp,png,jpg,gif|max:2048',
+            'images.*' => 'image|mimes:jpeg,png,svg,webp,jpg,gif|max:100000',
+            'cover' => 'required|image|mimes:jpeg,svg,webp,png,jpg,gif|max:100000',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->with('error', 'التحقق من البيانات فشل');
+            return redirect()->back()->with('error', $validator->errors()->first());
         }
 
         try {
@@ -103,6 +104,7 @@ class PhotoGalleryController extends Controller
 
             if ($request->hasFile('cover')) {
                 $cover = $request->file('cover');
+
                 $coverPath = $cover->store('images/Photo_gallery/cover' . $code, 'public');
                 $coverPath = 'storage/app/public/' . $coverPath;
             } else {
@@ -114,6 +116,7 @@ class PhotoGalleryController extends Controller
                     'image' => $imagePath,
                     'cover' => $coverPath,
                     'code' => $code,
+                    'title' => $request->title,
                 ]);
             }
 
@@ -132,13 +135,14 @@ class PhotoGalleryController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
             'images' => 'array|min:1',
-            'images.*' => 'image|mimes:jpeg,png,svg,webp,jpg,gif|max:2048',
-            'cover' => 'image|mimes:jpeg,png,svg,webp,jpg,gif|max:2048',
+            'images.*' => 'image|mimes:jpeg,png,svg,webp,jpg,gif|max:100000',
+            'cover' => 'image|mimes:jpeg,png,svg,webp,jpg,gif|max:100000',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->with('error', 'التحقق من البيانات فشل');
+            return redirect()->back()->with('error', $validator->errors()->first());
         }
 
         try {
@@ -151,13 +155,13 @@ class PhotoGalleryController extends Controller
                 $coverPath = $request->file('cover')->store('images/Photo_gallery/cover', 'public');
                 $coverPath = 'storage/app/public/' . $coverPath;
 
-                foreach ($photoGalleries as $gallery) {
-                    $gallery->cover = $coverPath;
-                    $gallery->save();
-                }
+                // Update the cover for the first gallery only (assuming it's the shared cover)
+                $photoGalleries->first()->cover = $coverPath;
+                $photoGalleries->first()->save();
             }
 
             if ($request->hasFile('images')) {
+                // Delete old images
                 foreach ($photoGalleries as $gallery) {
                     if (file_exists(public_path($gallery->image))) {
                         unlink(public_path($gallery->image));
@@ -165,6 +169,7 @@ class PhotoGalleryController extends Controller
                     $gallery->delete();
                 }
 
+                // Save new images
                 foreach ($request->file('images') as $image) {
                     $imagePath = $image->store('images/Photo_gallery', 'public');
                     $imagePath = 'storage/app/public/' . $imagePath;
@@ -173,7 +178,14 @@ class PhotoGalleryController extends Controller
                         'cover' => isset($coverPath) ? $coverPath : $photoGalleries->first()->cover,
                         'image' => $imagePath,
                         'code' => $code,
+                        'title' => $request->title,
                     ]);
+                }
+            } else {
+                // If no new images, just update the title
+                foreach ($photoGalleries as $gallery) {
+                    $gallery->title = $request->title;
+                    $gallery->save();
                 }
             }
 
@@ -182,6 +194,7 @@ class PhotoGalleryController extends Controller
             return redirect()->back()->with('error', 'حدث خطأ أثناء تعديل البيانات: ' . $e->getMessage());
         }
     }
+
 
     public function destroy($id)
     {

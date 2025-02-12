@@ -18,6 +18,16 @@ use App\Http\Controllers\VideoGalleryController;
 use App\Http\Controllers\PartnersController;
 use App\Http\Controllers\RegisterInController;
 use App\Http\Controllers\ContctFooterController;
+use App\Http\Controllers\headercontroller;
+use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\ContactusController;
+
+
+use App\Exports\membersExport;
+use App\Exports\newsletterExport;
+use App\Exports\ContactUsExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -30,10 +40,29 @@ use App\Http\Controllers\ContctFooterController;
 |
 */
 
+
+
 // Public route for login page
 Route::get('/', function () {
     return view('auth.login');
 })->name('login');
+
+
+
+Route::get('/export-contact-us', function () {
+    return Excel::download(new ContactUsExport, 'contact_us.xlsx');
+});
+
+
+Route::get('/export-members', function () {
+    return Excel::download(new membersExport, 'members.xlsx');
+});
+
+
+Route::get('/export-newsletter', function () {
+    return Excel::download(new newsletterExport, 'newsletter.xlsx');
+});
+
 
 // Authenticated user routes
 Route::middleware(['auth'])->group(function () {
@@ -51,6 +80,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('profile', [HomeController::class, 'profile'])->name('profile');
 
     // RESTful resource routes
+    Route::resource('header', headercontroller::class);
     Route::resource('main', HomeController::class);
     Route::resource('goals', GoalsController::class);
     Route::resource('about', AboutController::class);
@@ -58,6 +88,15 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::resource('register_in', RegisterInController::class);
+    // Route::resource('newsletter', NewsletterController::class);
+
+    Route::get('newsletter', [NewsletterController::class , 'index'] )->name('newsletter');
+    Route::get('contact', [ContactusController::class , 'index'] )->name('contact');
+
+
+    Route::get('export_contact', [ContactusController::class , 'export_contact'] )->name('export_contact');
+    // Route::post('newsletter', [NewsletterController::class , 'update'] )->name('newsletter');
+    // Route::delete('newsletter', [NewsletterController::class , 'destroy'] )->name('newsletter');
 
 
     Route::resource('latest_news', LatestNewsController::class);

@@ -13,6 +13,19 @@
         <form class="space-y-5" method="POST" action="{{ route('partners.store') }}" enctype="multipart/form-data">
             @csrf
             @method('POST')
+            
+            
+            <div>
+                <label for="ctnEmail">Title</label>
+                <input type="text" name="title" placeholder="Some Text..." class="form-input"  />
+            </div>
+            
+            
+            
+            <div>
+                <label for="ctnTextarea">Description</label>
+                <textarea id="ctnTextarea" rows="3" name="description" class="form-textarea" placeholder="Description" ></textarea>
+            </div>
 
 
             <div>

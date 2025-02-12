@@ -26,6 +26,12 @@
 
 
             <div>
+                <label for="ctnEmail">external_link_youtube</label>
+                <input type="text" name="external_link" placeholder="Some Text..." class="form-input" required />
+            </div>
+
+
+            {{-- <div>
                 <label for="ctnFile">Upload Imag</label>
                 <input id="ctnFile" type="file" name="images"
                     class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
@@ -38,7 +44,7 @@
                 <input id="ctnFile" type="file" name="video"
                     class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
                     required />
-            </div>
+            </div> --}}
             <button type="submit" class="btn btn-primary !mt-6">Submit</button>
         </form>
     </div>

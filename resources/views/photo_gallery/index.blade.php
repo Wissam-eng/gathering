@@ -30,6 +30,13 @@
             <div class="card"
                 style="width: 100%; max-width: 300px; border: 1px solid #e0e6ed; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
 
+                <div>
+                    <label for="ctnEmail">Title</label>
+                    <input type="text" name="title" value="{{ $gallery['title'] }}" placeholder="Some Text..." class="form-input" disabled  />
+                </div>
+
+
+
                 <!-- غلاف الصورة الرئيسي -->
                 <div class="cover" style="height: 200px; overflow: hidden;">
                     <img src="{{ asset($gallery['cover']) }}" alt="Cover Image"

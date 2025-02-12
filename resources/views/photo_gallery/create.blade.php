@@ -18,10 +18,10 @@
             @csrf
             @method('POST')
 
-            {{-- <div>
+            <div>
                 <label for="ctnEmail">Title</label>
                 <input type="text" name="title" placeholder="Some Text..." class="form-input"  />
-            </div> --}}
+            </div>
 
 
 

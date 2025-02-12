@@ -62,6 +62,18 @@
                     <div class="-mt-7 mb-7 -mx-6 rounded-tl rounded-tr h-[215px] overflow-hidden">
                         <img src="{{ asset($item->image) }}" alt="image" class="w-full h-full object-cover" />
                     </div>
+                    
+                    
+            <div>
+                <label for="ctnEmail">Title</label>
+                <input type="text" name="title" value="{{ $item->title }}" placeholder="Some Text..." class="form-input" disabled />
+            </div>
+            
+
+            <div>
+                <label for="ctnTextarea">Description</label>
+                <textarea id="ctnTextarea" rows="3" name="description" value="" class="form-textarea" placeholder="Description" disabled>{{ $item->description }}</textarea>
+            </div>
 
                 </div>
             </div>

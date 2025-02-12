@@ -42,6 +42,7 @@
                         <input type="url" name="facebook" placeholder="facebook" class="form-input">
                         <input type="url" name="instagram" placeholder="instagram" class="form-input">
                         <input type="url" name="twitter" placeholder="twitter" class="form-input">
+                        <input type="text" name="Newsletter" placeholder="Newsletter" class="form-input">
                     </div>
                 </div>
 

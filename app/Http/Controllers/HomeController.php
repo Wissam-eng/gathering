@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\home;
+use App\Models\header;
 use App\Models\video_gallery;
 use App\Models\target_group;
 use App\Models\supervisor_speech;
@@ -182,6 +183,7 @@ class HomeController extends Controller
     {
         try {
             $homes = home::all();
+            $header = header::all();
             $video_gallery = video_gallery::all();
             $target_group = target_group::all();
             $supervisor_speech = supervisor_speech::all();
@@ -191,10 +193,12 @@ class HomeController extends Controller
                 ->groupBy('code')
                 ->map(function ($group) {
                     $cover = $group->first()->cover;
+                    $title = $group->first()->title;
 
                     $images = $group->pluck('image');
 
                     return [
+                        'title' => $title,
                         'cover' => $cover,
                         'images' => $images,
                     ];
@@ -213,6 +217,7 @@ class HomeController extends Controller
                 'success' => true,
 
                 'main' => $homes,
+                'header' => $header,
                 'about' => $about,
                 'goals' => $goals,
                 'target_group' => $target_group,
@@ -239,8 +244,6 @@ class HomeController extends Controller
 
 
 
-
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -248,33 +251,41 @@ class HomeController extends Controller
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,svg,webp,png,jpg,gif|max:2048',
             'address' => 'nullable|string',
-            'date' => 'nullable|date',
+            'from' => 'nullable|string',
             'text' => 'nullable|string',
+            'to' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'التحقق من البيانات فشل', 'details' => $validator->errors()], 400);
+            return response()->json([
+                'error' => 'التحقق من البيانات فشل',
+                'details' => $validator->errors()
+            ], 400);
         }
 
         try {
-
+            $imagePath = null;
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('images/main', 'public');
                 $imagePath = 'storage/app/public/' . $imagePath;
+                $input['image'] = $imagePath;
             }
 
-            $home = home::create([
+            $home = Home::create([
                 'title' => $request->input('title'),
                 'description' => $request->input('description'),
-                'image' => $imagePath ?? null,
+                'image' => $imagePath,
                 'address' => $request->input('address'),
-                'date' => $request->input('date'),
+                'from' => $request->input('from'),
                 'text' => $request->input('text'),
+                'to' => $request->input('to'),
             ]);
+
+
 
             return redirect()->route('main.index')->with('message', 'تم اضافة البيانات بنجاح');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'حدث خطأ أثناء جلب البيانات:'  . $e->getMessage());
+            return redirect()->back()->with('error', 'حدث خطأ أثناء جلب البيانات: ' . $e->getMessage());
         }
     }
 
@@ -282,6 +293,7 @@ class HomeController extends Controller
     public function update(Request $request, $id)
     {
 
+        // dd($request->all());
         $home = home::find($id);
 
         if (!$home) {
@@ -298,6 +310,8 @@ class HomeController extends Controller
             'address' => 'sometimes|string',
             'date' => 'sometimes|date',
             'text' => 'sometimes|string',
+            'from' => 'sometimes|string',
+            'to' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {

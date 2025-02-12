@@ -14,5 +14,6 @@ class video_gallery extends Model
         'video',
         'title',
         'duration',
+        'external_link',
     ];
 }

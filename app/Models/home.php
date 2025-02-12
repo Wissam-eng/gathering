@@ -13,7 +13,8 @@ class home extends Model
         'description',
         'image',
         'address',
-        'date',
+        'from',
         'text',
+        'to',
     ];
 }

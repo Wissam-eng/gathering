@@ -57,7 +57,7 @@
 
                 </div>
 
-                <div class="py-7 px-6">
+                <div class="py-7 px-6" style="width: 100%;">
 
 
 
@@ -166,6 +166,15 @@
                     <hr>
 
 
+                    <div>
+                        <label for="ctnEmail">Newsletter</label>
+                        <h2 class="text-[#3b3f5c] text-lg font-semibold dark:text-white-light">
+                            {{ $item->Newsletter }}
+                        </h2>
+                    </div>
+                    <hr>
+
+
 
                 </div>
             </div>
@@ -174,6 +183,9 @@
 
 
     <style>
+    h2{
+        overflow:auto;
+    }
         .card {
             display: flex;
             flex-wrap: wrap;

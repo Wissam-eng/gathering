@@ -51,6 +51,7 @@ class ContctFooterController extends Controller
             'facebook' => 'nullable|string|url',
             'instagram' => 'nullable|string|url',
             'twitter' => 'nullable|string|url',
+            'Newsletter' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -69,6 +70,7 @@ class ContctFooterController extends Controller
                 'facebook' => $request->input('facebook'),
                 'instagram' => $request->input('instagram'),
                 'twitter' => $request->input('twitter'),
+                'Newsletter' => $request->input('Newsletter'),
             ]);
 
             return redirect()->route('contct_footer.index')->with('success', 'تم إضافة البيانات بنجاح');
@@ -85,6 +87,7 @@ class ContctFooterController extends Controller
             return redirect()->route('contct_footer.index')->with('error', 'البيانات غير موجودة');
         }
 
+
         $validator = Validator::make($request->all(), [
             'location' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:255',
@@ -94,6 +97,8 @@ class ContctFooterController extends Controller
             'facebook' => 'nullable|string|url',
             'instagram' => 'nullable|string|url',
             'twitter' => 'nullable|string|url',
+            'Newsletter' => 'nullable|string',
+
         ]);
 
         if ($validator->fails()) {
@@ -101,7 +106,7 @@ class ContctFooterController extends Controller
         }
 
         try {
-          
+
 
             $contactFooter->update([
                 'phone' => $request->input('phone'),
@@ -112,6 +117,7 @@ class ContctFooterController extends Controller
                 'facebook' => $request->input('facebook'),
                 'instagram' => $request->input('instagram'),
                 'twitter' => $request->input('twitter'),
+                'Newsletter' => $request->input('Newsletter'),
             ]);
 
             return redirect()->route('contct_footer.index')->with('success', 'تم تعديل البيانات بنجاح');

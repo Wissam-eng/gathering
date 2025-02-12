@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RegisterIn;
+use App\Models\registerIn;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
 class RegisterInController extends Controller
 {
+
+
     public function index()
     {
-        $registers = RegisterIn::all();
+        $registers = registerIn::all();
         return view('RegisterIn.index', compact('registers'));
     }
-
-
-
 
 
     public function create()
@@ -28,7 +27,7 @@ class RegisterInController extends Controller
 
     public function edit($id)
     {
-        $card = RegisterIn::find($id);
+        $card = registerIn::find($id);
         if (!$card) {
             return redirect()->back()->with('error', 'البيانات غير موجودة');
         }
@@ -66,7 +65,7 @@ class RegisterInController extends Controller
                 $data['image'] = $imagePath;
             }
 
-            $register = RegisterIn::create($data);
+            $register = registerIn::create($data);
 
             return response()->json(['message' => 'Created successfully'], 201);
 
@@ -78,7 +77,7 @@ class RegisterInController extends Controller
 
     public function update(Request $request, $id)
     {
-        $registerIn = RegisterIn::find($id);
+        $registerIn = registerIn::find($id);
 
         if (!$registerIn) {
             return redirect()->route('RegisterIn.index')->with('error', 'Data not found');
@@ -121,7 +120,7 @@ class RegisterInController extends Controller
 
     public function destroy($id)
     {
-        $registerIn = RegisterIn::find($id);
+        $registerIn = registerIn::find($id);
 
         if (!$registerIn) {
             return redirect()->route('RegisterIn.index')->with('error', 'Data not found');

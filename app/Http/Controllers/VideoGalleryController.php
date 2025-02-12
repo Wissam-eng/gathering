@@ -36,113 +36,61 @@ class VideoGalleryController extends Controller
 
         return view('video_gallery.edite')->with('card', $card);
     }
-    
-    
+
+
     public function store(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'title' => 'required|string|max:255',
-        'video' => 'required|mimes:mp4,mov,avi,wmv,flv,mkv|max:10000',
-        'images' => 'required|image|mimes:jpeg,png,svg,webp,jpg,gif|max:2048',
-    ]);
-
-    if ($validator->fails()) {
-        return redirect()->back()->withErrors($validator)->with('error', 'Validation failed');
-    }
-
-    try {
-        
-        $getID3 = new getID3();
-
-        // تخزين الفيديو
-        $videoPath = $request->file('video')->store('video_gallery/video', 'public');
-        
-        $fullVideoPath = 'storage/app/public/' . $videoPath;
-        // $fullVideoPath = storage_path('app/public/' . $videoPath);
-
-        // الحصول على مدة الفيديو
-        $fileInfo = $getID3->analyze($fullVideoPath);
-        $duration = $fileInfo['playtime_seconds'] ?? 0;
-
-        // تخزين الصورة
-        $imagePath = $request->file('images')->store('video_gallery/imgs', 'public');
-        
-        $imagePath = 'storage/app/public/' . $imagePath;
-        
-       
-
-        // إنشاء العنصر وحفظه
-        video_gallery::create([
-            'title' => $request->input('title'),
-            'video' => $fullVideoPath,
-            'images' => $imagePath,
-            'duration' => round($duration),
+    {
+        $validator = Validator::make($request->all(), [
+            'external_link' => 'required|string',
+            'title' => 'required|string|max:255',
+            'video' => 'nullable|mimes:mp4,mov,avi,wmv,flv,mkv|max:10000',
+            'images' => 'nullable|image|mimes:jpeg,png,svg,webp,jpg,gif|max:2048',
         ]);
 
-        return redirect()->route('video_gallery.index')->with('success', 'Data added successfully');
-    } catch (\Exception $e) {
-        Log::error('Error storing video: ' . $e->getMessage());
-        return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->with('error', 'Validation failed');
+        }
+
+        try {
+
+            // $getID3 = new getID3();
+
+            // // تخزين الفيديو
+            // $videoPath = $request->file('video')->store('video_gallery/video', 'public');
+
+            // $fullVideoPath = 'storage/app/public/' . $videoPath;
+            // // $fullVideoPath = storage_path('app/public/' . $videoPath);
+
+            // // الحصول على مدة الفيديو
+            // $fileInfo = $getID3->analyze($fullVideoPath);
+            // $duration = $fileInfo['playtime_seconds'] ?? 0;
+
+            // // تخزين الصورة
+            // $imagePath = $request->file('images')->store('video_gallery/imgs', 'public');
+
+            // $imagePath = 'storage/app/public/' . $imagePath;
+
+
+
+            // إنشاء العنصر وحفظه
+            video_gallery::create([
+                'external_link' => $request->input('external_link'),
+                'title' => $request->input('title'),
+                // 'video' => $fullVideoPath,
+                // 'images' => $imagePath,
+                // 'duration' => round($duration),
+            ]);
+
+            return redirect()->route('video_gallery.index')->with('success', 'Data added successfully');
+        } catch (\Exception $e) {
+            Log::error('Error storing video: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
+        }
     }
-}
 
-    
-    
 
-// public function store(Request $request)
-// {
-//     $validator = Validator::make($request->all(), [
-//         'title' => 'required|array|min:1',
-//         'title.*' => 'required|string|max:255',
-//         'video' => 'required|array|min:1',
-//         'video.*' => 'required|mimes:mp4,mov,avi,wmv,flv,mkv|max:10000',
-//         'images' => 'required|array|min:1',
-//         'images.*' => 'image|mimes:jpeg,png,svg,webp,jpg,gif|max:2048',
-//     ]);
 
-//     if ($validator->fails()) {
-//         return redirect()->back()->withErrors($validator)->with('error', 'Validation failed');
-//     }
 
-//     if (
-//         count($request->input('title')) !== count($request->file('video')) ||
-//         count($request->file('video')) !== count($request->file('images'))
-//     ) {
-//         return redirect()->back()->with('error', 'The count of titles, videos, and images must match.');
-//     }
-
-//     try {
-//         $data = [];
-//         $getID3 = new getID3();
-
-//         foreach ($request->file('video') as $index => $video) {
-//             $videoPath = $video->store('video_gallery/video', 'public');
-//             $fullVideoPath = storage_path('app/public/' . $videoPath);
-
-//             $fileInfo = $getID3->analyze($fullVideoPath);
-//             $duration = $fileInfo['playtime_seconds'] ?? 0;
-
-//             $image = $request->file('images')[$index];
-//             $imagePath = $image->store('video_gallery/imgs', 'public');
-
-//             $data[] = [
-//                 'video' => Storage::url($videoPath),
-//                 'images' => Storage::url($imagePath),
-//                 'duration' => round($duration),
-//                 'title' => $request->input('title')[$index],
-//             ];
-//         }
-
-//         foreach ($data as $item) {
-//             video_gallery::create($item);
-//         }
-
-//         return redirect()->route('video_gallery.index')->with('success', 'Data added successfully');
-//     } catch (\Exception $e) {
-//         Log::error('Error storing video: ' . $e->getMessage());
-//         return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
-//     }
-// }
 
 
     public function update(Request $request, $id)
@@ -154,6 +102,7 @@ class VideoGalleryController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
+            'external_link' => 'required|string',
 
             'title' => 'sometimes|string|max:255',
 
@@ -197,6 +146,7 @@ class VideoGalleryController extends Controller
                 $input['video'] = $video_gallery->video;
                 $input['duration'] = $video_gallery->duration;
             }
+
 
             $video_gallery->update($input);
 

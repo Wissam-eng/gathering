@@ -54,7 +54,7 @@
                         <i class="fa-solid fa-trash"></i>
                     </a>
 
-                
+
                 </div>
 
                 <div class="py-7 px-6">
@@ -78,9 +78,17 @@
                     <hr>
 
                     <h5 class="text-[#3b3f5c] text-lg font-semibold mb-4 dark:text-white-light fixed-height-subtitle">
-                        {{ $item->date }}
+                        {{ $item->from }}
                     </h5>
                     <hr>
+
+
+                    <h5 class="text-[#3b3f5c] text-lg font-semibold mb-4 dark:text-white-light fixed-height-subtitle">
+                        {{ $item->to }}
+                    </h5>
+                    <hr>
+
+
 
                     <!-- النصوص الأخرى -->
                     <textarea class="text-white-dark fixed-height-textarea" disabled>

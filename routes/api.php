@@ -19,6 +19,8 @@ use App\Http\Controllers\VideoGalleryController;
 use App\Http\Controllers\PartnersController;
 use App\Http\Controllers\RegisterInController;
 use App\Http\Controllers\ContctFooterController;
+use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\ContactusController;
 
 /*
 |--------------------------------------------------------------------------
@@ -136,6 +138,10 @@ Route::middleware('auth:api')->group(function () {
     //logout
     Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+
+Route::post('newsletter', [NewsletterController::class , 'store'] )->name('newsletter');
+Route::post('contact', [ContactusController::class , 'store'] )->name('contact');
 
 
 Route::post('registerIn', [RegisterInController::class, 'store']);

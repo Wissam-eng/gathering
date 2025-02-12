@@ -17,6 +17,7 @@ class contct_footer extends Model
         'facebook',
         'instagram',
         'twitter',
+        'Newsletter',
     ];
 }
 

@@ -37,8 +37,15 @@
                 <hr>
 
                 <h5 class="text-[#3b3f5c] text-lg font-semibold mb-4 dark:text-white-light fixed-height-subtitle">
-                    {{ $card->date }}
+                    {{ $card->from }}
                 </h5>
+                <hr>
+
+
+                <div>
+                    <label for="ctnEmail">to</label>
+                    <input type="text" name="to" value="{{ $card->to }}" placeholder="Some Text..." class="form-input"  />
+                </div>
                 <hr>
 
                 <!-- النصوص الأخرى -->
@@ -73,12 +80,16 @@
 
 
             <!-- basic -->
-            <div x-data="form">
-                <input id="basic" type="text" value="{{ $card->date }}" x-model="date1" class="form-input" />
+            <div >
+                <label for="ctnEmail">from</label>
+                <input id="basic" type="text" name="from" value="{{ $card->from }}" class="form-input" />
             </div>
 
 
-
+            <div>
+                <label for="ctnEmail">to</label>
+                <input type="text" name="to" value="{{ $card->to }}" placeholder="Some Text..." class="form-input"  />
+            </div>
 
             <div>
                 <label for="ctnTextarea">Description</label>

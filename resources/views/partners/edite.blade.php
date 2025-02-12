@@ -21,6 +21,19 @@
                 <div class="-mt-7 mb-7 -mx-6 rounded-tl rounded-tr h-[215px] overflow-hidden">
                     <img src="{{ asset($card->image) }}" alt="image" class="w-full h-full object-cover" />
                 </div>
+                
+                       <div>
+                <label for="ctnEmail">Title</label>
+                <input type="text" name="title" value="{{ $card->title }}" placeholder="Some Text..." class="form-input" disabled />
+            </div>
+            
+            
+            
+            <div>
+                <label for="ctnTextarea">Description</label>
+                <textarea id="ctnTextarea" rows="3" name="description" value="{{ $card->description }}" class="form-textarea" placeholder="Description" disabled></textarea>
+            </div>
+                
 
 
 
@@ -31,6 +44,20 @@
         <form class="space-y-5" method="POST" action="{{ route('partners.update', $card) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
+            
+            
+                     
+            <div>
+                <label for="ctnEmail">Title</label>
+                <input type="text" name="title" value="{{ $card->title }}" placeholder="Some Text..." class="form-input"  />
+            </div>
+            
+            
+            
+            <div>
+                <label for="ctnTextarea">Description</label>
+                <textarea id="ctnTextarea" rows="3" name="description" value="{{ $card->description }}" class="form-textarea" placeholder="Description" ></textarea>
+            </div>
 
 
             <div>
