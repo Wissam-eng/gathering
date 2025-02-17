@@ -23,6 +23,12 @@
                 </div>
 
 
+
+                <div class="-mt-7 mb-7 -mx-6 rounded-tl rounded-tr h-[215px] overflow-hidden">
+                    <img src="{{ asset($card->image2) }}" alt="image" class="w-full h-full object-cover" />
+                </div>
+
+
                 <!-- العنوان -->
                 <h2 class="text-[#3b3f5c] text-lg font-semibold dark:text-white-light">
                     {{ $card->title }}
@@ -77,6 +83,15 @@
                 <input id="ctnFile" type="file" name="image"
                     class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" />
             </div>
+
+
+            <div>
+                <label for="ctnFile">Upload Imag2</label>
+                <input id="ctnFile" type="file" name="image2"
+                    class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" />
+            </div>
+
+            
             <button type="submit" class="btn btn-primary !mt-6">update</button>
         </form>
     </div>

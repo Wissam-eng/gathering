@@ -40,7 +40,7 @@ class SponsorshipController extends Controller
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
             'link' => 'sometimes|url',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,webp,svg,jpg,gif|max:10000',
         ]);
 
         if ($validator->fails()) {
@@ -81,7 +81,7 @@ class SponsorshipController extends Controller
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
             'link' => 'sometimes|url',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,webp,svg,jpg,gif|max:10000',
         ]);
 
         if ($validator->fails()) {

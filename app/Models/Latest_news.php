@@ -13,5 +13,7 @@ class Latest_news extends Model
         'description',
         'date',
         'image',
+        'image2',
+
     ];
 }

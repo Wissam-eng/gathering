@@ -44,7 +44,7 @@ class VideoGalleryController extends Controller
             'external_link' => 'required|string',
             'title' => 'required|string|max:255',
             'video' => 'nullable|mimes:mp4,mov,avi,wmv,flv,mkv|max:10000',
-            'images' => 'nullable|image|mimes:jpeg,png,svg,webp,jpg,gif|max:2048',
+            'images' => 'nullable|image|mimes:jpeg,png,svg,webp,jpg,gif|max:10000',
         ]);
 
         if ($validator->fails()) {
@@ -108,7 +108,7 @@ class VideoGalleryController extends Controller
 
             'video' => 'sometimes|mimes:mp4,mov,avi,wmv,flv,mkv|max:10000',
 
-            'images' => 'image|mimes:jpeg,svg,webp,png,jpg,gif|max:2048',
+            'images' => 'image|mimes:jpeg,svg,webp,png,jpg,gif|max:10000',
         ]);
 
 

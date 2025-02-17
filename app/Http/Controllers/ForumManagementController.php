@@ -44,7 +44,7 @@ class ForumManagementController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
-            'image' => 'nullable|image|mimes:jpeg,png,svg,webp,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,svg,webp,jpg,gif|max:10000',
         ]);
 
         if ($validator->fails()) {
@@ -83,7 +83,7 @@ class ForumManagementController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
-            'image' => 'nullable|image|mimes:jpeg,png,svg,webp,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,svg,webp,jpg,gif|max:10000',
         ]);
 
         if ($validator->fails()) {

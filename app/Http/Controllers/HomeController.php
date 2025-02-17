@@ -126,7 +126,7 @@ class HomeController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'name' => 'sometimes|string|max:255',
-                'img' => 'image|mimes:jpeg,svg,jpg,webp,png,jpg,gif|max:2048',
+                'img' => 'image|mimes:jpeg,svg,jpg,webp,png,jpg,gif|max:10000',
                 'email' => 'sometimes|email',
                 'password' => 'nullable|string|min:1',
             ]);
@@ -249,7 +249,7 @@ class HomeController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,svg,webp,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,svg,webp,png,jpg,gif|max:10000',
             'address' => 'nullable|string',
             'from' => 'nullable|string',
             'text' => 'nullable|string',
@@ -306,7 +306,7 @@ class HomeController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,webp,svg,jpg,gif|max:10000',
             'address' => 'sometimes|string',
             'date' => 'sometimes|date',
             'text' => 'sometimes|string',

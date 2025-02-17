@@ -53,7 +53,8 @@ class LatestNewsController extends Controller
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
             'date' => 'sometimes|date',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,webp,svg,jpg,gif|max:10000',
+            'image2' => 'nullable|image|mimes:jpeg,png,webp,svg,jpg,gif|max:10000',
         ]);
 
         if ($validator->fails()) {
@@ -68,10 +69,17 @@ class LatestNewsController extends Controller
                 $imagePath = 'storage/app/public/' . $imagePath;
             }
 
+
+            if ($request->hasFile('image2')) {
+                $imagePath2 = $request->file('image2')->store('images/Latest_news', 'public');
+                $imagePath2 = 'storage/app/public/' . $imagePath2;
+            }
+
             $Latest_news = Latest_news::create([
                 'title' => $request->input('title'),
                 'description' => $request->input('description'),
                 'image' => $imagePath ?? null,
+                'image2' => $imagePath2 ?? null,
                 'date' => $request->input('date'),
             ]);
 
@@ -93,7 +101,8 @@ class LatestNewsController extends Controller
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
             'date' => 'sometimes|date_format:Y-m-d',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,webp,svg,jpg,gif|max:10000',
+            'image2' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg,gif|max:10000',
         ]);
 
         if ($validator->fails()) {
@@ -109,6 +118,14 @@ class LatestNewsController extends Controller
                 }
                 $imagePath = $request->file('image')->store('images/Latest_news', 'public');
                 $input['image'] = 'storage/app/public/' . $imagePath;
+            }
+
+            if ($request->hasFile('image2')) {
+                if ($Latest_news->image2 && file_exists(public_path('storage/' . $Latest_news->image2))) {
+                    unlink(public_path('storage/' . $Latest_news->image2));
+                }
+                $imagePath2 = $request->file('image2')->store('images/Latest_news', 'public');
+                $input['image2'] = 'storage/app/public/' . $imagePath2;
             }
 
             $Latest_news->update($input);

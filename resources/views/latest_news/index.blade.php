@@ -28,8 +28,7 @@
 
         @foreach ($Latest_newss as $item)
             <!-- card -->
-            <div style="display: flex; flex-direction: column;"
-                class="max-w-[19rem] w-full bg-white shadow-[4px_6px_10px_-3px_#bfc9d4] rounded border border-[#e0e6ed] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none card">
+            <div style="display: flex; flex-direction: column;" class="max-w-[19rem] w-full bg-white shadow-[4px_6px_10px_-3px_#bfc9d4] rounded border border-[#e0e6ed] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none card">
 
                 <!-- Header -->
                 <div style="    display: flex;     justify-content: space-evenly;"
@@ -62,7 +61,12 @@
                     <div class="-mt-7 mb-7 -mx-6 rounded-tl rounded-tr h-[215px] overflow-hidden">
                         <img src="{{ asset($item->image) }}" alt="image" class="w-full h-full object-cover" />
                     </div>
-                    
+
+
+                    <div class="-mt-7 mb-7 -mx-6 rounded-tl rounded-tr h-[215px] overflow-hidden">
+                        <img src="{{ asset($item->image2) }}" alt="image" class="w-full h-full object-cover" />
+                    </div>
+
 
                     <!-- العنوان -->
                     <h2 class="text-[#3b3f5c] text-lg font-semibold dark:text-white-light">

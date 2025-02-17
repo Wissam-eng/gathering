@@ -48,7 +48,7 @@ class RegisterInController extends Controller
             'company' => 'nullable|string|max:255',
             'job_title' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,webp,svg,jpg,gif,svg|max:10000',
         ]);
 
         if ($validator->fails()) {
@@ -92,7 +92,7 @@ class RegisterInController extends Controller
             'company' => 'sometimes|string|max:255',
             'job_title' => 'sometimes|string|max:255',
             'city' => 'sometimes|string|max:255',
-            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'sometimes|image|mimes:jpeg,png,webp,svg,jpg,gif,svg|max:10000',
         ]);
 
         if ($validator->fails()) {

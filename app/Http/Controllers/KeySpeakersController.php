@@ -46,15 +46,15 @@ class KeySpeakersController extends Controller
             'name' => 'sometimes|string|max:255',
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
-            'image' => 'nullable|image|mimes:jpeg,svg,webp,png,jpg,gif|max:2048',
-            'file' => 'nullable|mimes:pdf,xlsx,doc,docx,txt|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,svg,webp,png,jpg,gif|max:10000',
+            'file' => 'nullable|mimes:pdf,xlsx,doc,docx,txt|max:10000',
         ]);
 
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->with('error', $validator->fails() .'التحقق من البيانات فشل');
         }
-        
+
 
         try {
             $imagePath = null;
@@ -99,8 +99,8 @@ class KeySpeakersController extends Controller
             'name' => 'sometimes|string|max:255',
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
-            'image' => 'nullable|image|mimes:jpeg,svg ,webp,png,jpg,gif|max:2048',
-            'file' => 'nullable|mimes:pdf,xlsx,doc,docx,txt|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,svg ,webp,png,jpg,gif|max:10000',
+            'file' => 'nullable|mimes:pdf,xlsx,doc,docx,txt|max:10000',
         ]);
 
         if ($validator->fails()) {

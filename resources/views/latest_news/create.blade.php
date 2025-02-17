@@ -35,9 +35,20 @@
                 <label for="ctnTextarea">Description</label>
                 <textarea id="ctnTextarea" rows="3" name="description" class="form-textarea" placeholder="Description" required></textarea>
             </div>
+
+
             <div>
-                <label for="ctnFile">Upload Imag</label>
+                <label for="ctnFile">Upload Imag1</label>
                 <input id="ctnFile" type="file" name="image"
+                    class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
+                    required />
+            </div>
+
+
+
+            <div>
+                <label for="ctnFile">Upload Imag2</label>
+                <input id="ctnFile" type="file" name="image2"
                     class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
                     required />
             </div>
