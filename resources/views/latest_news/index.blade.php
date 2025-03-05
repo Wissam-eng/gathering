@@ -62,10 +62,10 @@
                         <img src="{{ asset($item->image) }}" alt="image" class="w-full h-full object-cover" />
                     </div>
 
-
+{{-- 
                     <div class="-mt-7 mb-7 -mx-6 rounded-tl rounded-tr h-[215px] overflow-hidden">
                         <img src="{{ asset($item->image2) }}" alt="image" class="w-full h-full object-cover" />
-                    </div>
+                    </div> --}}
 
 
                     <!-- العنوان -->

@@ -23,12 +23,12 @@
                 <div>
                     <label for="header_value{{ $i }}_number">Header Value {{ $i }} (Number)</label>
                     <input type="text" name="header_value{{ $i }}[]" value="{{ $number }}" placeholder="Enter a number"
-                        class="form-input" required />
+                        class="form-input"  />
                 </div>
                 <div>
                     <label for="header_value{{ $i }}_text">Header Value {{ $i }} (Text)</label>
                     <input type="text" name="header_value{{ $i }}[]" value="{{ $text }}" placeholder="Enter text"
-                        class="form-input" required />
+                        class="form-input"  />
                 </div>
             @endfor
 

@@ -16,11 +16,11 @@
             @for ($i = 1; $i <= 6; $i++)
                 <div>
                     <label for="header_value{{ $i }}">Header Value {{ $i }} (Number)</label>
-                    <input type="text" name="header_value{{ $i }}[]" placeholder="Enter a number" class="form-input" required />
+                    <input type="text" name="header_value{{ $i }}[]" placeholder="Enter a number" class="form-input"  />
                 </div>
                 <div>
                     <label for="header_value{{ $i }}">Header Value {{ $i }} (Text)</label>
-                    <input type="text" name="header_value{{ $i }}[]" placeholder="Enter text" class="form-input" required />
+                    <input type="text" name="header_value{{ $i }}[]" placeholder="Enter text" class="form-input"  />
                 </div>
             @endfor
 

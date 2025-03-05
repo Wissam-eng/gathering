@@ -48,6 +48,12 @@
                 </div>
                 <hr>
 
+                <div>
+                    <label for="ctnEmail">welcome</label>
+                    <input type="text" name="welcome" value="{{ $card->welcome }}" placeholder="Some Text..." class="form-input"  />
+                </div>
+                <hr>
+
                 <!-- النصوص الأخرى -->
                 <textarea class="text-white-dark fixed-height-textarea" disabled>
                             {{ $card->description }}
@@ -89,6 +95,12 @@
             <div>
                 <label for="ctnEmail">to</label>
                 <input type="text" name="to" value="{{ $card->to }}" placeholder="Some Text..." class="form-input"  />
+            </div>
+
+
+            <div>
+                <label for="ctnEmail">welcome</label>
+                <input type="text" name="welcome" value="{{ $card->welcome }}" placeholder="Some Text..." class="form-input"  />
             </div>
 
             <div>

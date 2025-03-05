@@ -63,6 +63,10 @@
                         <img src="{{ asset($item->image) }}" alt="image" class="w-full h-full object-cover" />
                     </div>
 
+                    <div class="-mt-7 mb-7 -mx-6 rounded-tl rounded-tr h-[215px] overflow-hidden">
+                        <img src="{{ url($item->image) }}" alt="image" class="w-full h-full object-cover" />
+                    </div>
+
 
                     <!-- العنوان -->
                     <h2 class="text-[#3b3f5c] text-lg font-semibold dark:text-white-light">
@@ -85,6 +89,12 @@
 
                     <h5 class="text-[#3b3f5c] text-lg font-semibold mb-4 dark:text-white-light fixed-height-subtitle">
                         {{ $item->to }}
+                    </h5>
+                    <hr>
+
+
+                    <h5 class="text-[#3b3f5c] text-lg font-semibold mb-4 dark:text-white-light fixed-height-subtitle">
+                        {{ $item->welcome }}
                     </h5>
                     <hr>
 

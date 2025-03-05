@@ -16,5 +16,6 @@ class home extends Model
         'from',
         'text',
         'to',
+        'welcome',
     ];
 }

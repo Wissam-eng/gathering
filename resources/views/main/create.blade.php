@@ -45,6 +45,13 @@
             </div>
 
 
+
+            <div>
+                <label for="ctnEmail">welcome</label>
+                <input type="text" name="welcome" placeholder="Some Text..." class="form-input" />
+            </div>
+
+
             <div>
                 <label for="ctnTextarea">Description</label>
                 <textarea id="ctnTextarea" rows="3" name="description" class="form-textarea" placeholder="Description" required></textarea>
