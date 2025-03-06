@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Key_speakers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 class KeySpeakersController extends Controller
 {
     public function index()
@@ -57,6 +58,7 @@ class KeySpeakersController extends Controller
 
 
         try {
+
             $imagePath = null;
             $filePath = null;
 

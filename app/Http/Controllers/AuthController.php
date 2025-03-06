@@ -70,9 +70,7 @@ class AuthController extends Controller
         return response()->json(['message' => 'User successfully logged out']);
     }
 
-    /**
-     * Get the authenticated user.
-     */
+ 
     public function me()
     {
         return response()->json(JWTAuth::user());

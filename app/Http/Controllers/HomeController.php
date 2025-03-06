@@ -13,6 +13,7 @@ use App\Models\Photo_gallery;
 use App\Models\partners;
 use App\Models\organizing_entity;
 use App\Models\Latest_news;
+use App\Models\TitleWeb;
 use App\Models\Media_partner;
 use App\Models\Key_speakers;
 use App\Models\goals;
@@ -24,6 +25,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
@@ -183,6 +186,7 @@ class HomeController extends Controller
     {
         try {
             $homes = home::all();
+            $title = TitleWeb::all();
             $header = header::all();
             $video_gallery = video_gallery::all();
             $target_group = target_group::all();
@@ -217,6 +221,7 @@ class HomeController extends Controller
                 'success' => true,
 
                 'main' => $homes,
+                'title' => $title,
                 'header' => $header,
                 'about' => $about,
                 'goals' => $goals,
@@ -265,6 +270,7 @@ class HomeController extends Controller
         }
 
         try {
+
             $imagePath = null;
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('images/main', 'public');

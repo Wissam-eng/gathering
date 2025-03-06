@@ -4,13 +4,12 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Gathering</title>
+    <title>Championship</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="{{ url('resources/views/main/favicon.png') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ url('favicon.png') }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
 
 
@@ -23,16 +22,16 @@
 
 
     <link rel="stylesheet" type="text/css" media="screen"
-        href="{{ url('resources/views/main/assets/css/perfect-scrollbar.min.css') }}" />
+        href="{{ url('assets/css/perfect-scrollbar.min.css') }}" />
 
     <link rel="stylesheet" type="text/css" media="screen"
-        href="{{ url('resources/views/main/assets/css/style.css') }}" />
+        href="{{ url('assets/css/style.css') }}" />
 
     <link defer rel="stylesheet" type="text/css" media="screen"
-        href="{{ url('resources/views/main/assets/css/animate.css') }}" />
+        href="{{ url('assets/css/animate.css') }}" />
     <link rel="stylesheet" type="text/css"
-        href="{{ url('resources/views/main/assets/css/file-upload-with-preview.min.css') }}" />
-    <link rel="stylesheet" href="{{ url('resources/views/main/assets/css/flatpickr.min.css') }}" />
+        href="{{ url('assets/css/file-upload-with-preview.min.css') }}" />
+    <link rel="stylesheet" href="{{ url('assets/css/flatpickr.min.css') }}" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
@@ -40,10 +39,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script src="{{ url('resources/views/main/assets/js/perfect-scrollbar.min.js') }}"></script>
-    <script defer src="{{ url('resources/views/main/assets/js/popper.min.js') }}"></script>
-    <script defer src="{{ url('resources/views/main/assets/js/tippy-bundle.umd.min.js') }}"></script>
-    <script defer src="{{ url('resources/views/main/assets/js/sweetalert.min.js') }}"></script>
+    <script src="{{ url('assets/js/perfect-scrollbar.min.js') }}"></script>
+    <script defer src="{{ url('assets/js/popper.min.js') }}"></script>
+    <script defer src="{{ url('assets/js/tippy-bundle.umd.min.js') }}"></script>
+    <script defer src="{{ url('assets/js/sweetalert.min.js') }}"></script>
 </head>
 
 <body x-data="main" class="relative overflow-x-hidden font-nunito text-sm font-normal antialiased"
@@ -299,11 +298,11 @@
                 class="sidebar fixed bottom-0 top-0 z-50 h-full min-h-screen w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-all duration-300">
                 <div class="h-full bg-white dark:bg-[#0e1726]">
                     <div class="flex items-center justify-between px-4 py-3">
-                        <a href="{{ url('main') }}" class="main-logo flex shrink-0 items-center">
+                        <a href="index.html" class="main-logo flex shrink-0 items-center">
                             <img class="ml-[5px] w-8 flex-none"
-                                src="{{ url('resources/views/main/assets/images/logo.svg') }}" alt="image" />
+                                src="{{ url('assets/images/logo.svg') }}" alt="image" />
                             <span
-                                class="align-middle text-2xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline">Gathering</span>
+                                class="align-middle text-2xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline">Championship</span>
                         </a>
                         <a href="javascript:;"
                             class="collapse-icon flex h-8 w-8 items-center rounded-full transition duration-300 hover:bg-gray-500/10 rtl:rotate-180 dark:text-white-light dark:hover:bg-dark-light/10"
@@ -460,49 +459,7 @@
                                 <li><a href="{{ route('goals.index') }}" class="active">show</a></li>
                                 <li><a href="{{ route('goals.create') }}">add</a></li>
                             </ul>
-
-
-
-
-
-
-
-                        <li class="menu nav-item">
-                            <button type="button" class="nav-link group"
-                                :class="{ 'active': activeDropdown === 'title' }"
-                                @click="activeDropdown === 'title' ? activeDropdown = null : activeDropdown = 'title'">
-                                <div class="flex items-center">
-                                    <svg class="shrink-0 group-hover:!text-primary" width="20" height="20"
-                                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path opacity="0.5"
-                                            d="M2 12.2039C2 9.91549 2 8.77128 2.5192 7.82274C3.0384 6.87421 3.98695 6.28551 5.88403 5.10813L7.88403 3.86687C9.88939 2.62229 10.8921 2 12 2C13.1079 2 14.1106 2.62229 16.116 3.86687L18.116 5.10812C20.0131 6.28551 20.9616 6.87421 21.4808 7.82274C22 8.77128 22 9.91549 22 12.2039V13.725C22 17.6258 22 19.5763 20.8284 20.7881C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.7881C2 19.5763 2 17.6258 2 13.725V12.2039Z"
-                                            fill="currentColor" />
-                                        <path
-                                            d="M9 17.25C8.58579 17.25 8.25 17.5858 8.25 18C8.25 18.4142 8.58579 18.75 9 18.75H15C15.4142 18.75 15.75 18.4142 15.75 18C15.75 17.5858 15.4142 17.25 15 17.25H9Z"
-                                            fill="currentColor" />
-                                    </svg>
-                                    <span
-                                        class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Title</span>
-                                </div>
-                                <div class="rtl:rotate-180" :class="{ '!rotate-90': activeDropdown === 'title' }">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5"
-                                            stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                </div>
-                            </button>
-                            <ul x-cloak x-show="activeDropdown === 'title'" x-collapse class="sub-menu text-gray-500">
-                                <li><a href="{{ route('title_web.edit') }}">Update</a></li>
-                            </ul>
                         </li>
-
-
-
-
-
-
-
 
                         <!-- Item 2: target_group -->
                         <li class="menu nav-item">
@@ -1103,12 +1060,12 @@
                 <div class="shadow-sm">
                     <div class="relative flex w-full items-center bg-white px-5 py-2.5 dark:bg-[#0e1726]">
                         <div class="horizontal-logo flex items-center justify-between ltr:mr-2 rtl:ml-2 lg:hidden">
-                            <a href="{{ url('main') }}" class="main-logo flex shrink-0 items-center">
+                            <a href="index.html" class="main-logo flex shrink-0 items-center">
                                 <img class="inline w-8 ltr:-ml-1 rtl:-mr-1"
-                                    src="{{ url('resources/views/main/assets/images/logo.svg') }}"
+                                    src="{{ url('assets/images/logo.svg') }}"
                                     alt="image" />
                                 <span
-                                    class="hidden align-middle text-2xl font-semibold transition-all duration-300 ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light md:inline">Gathering</span>
+                                    class="hidden align-middle text-2xl font-semibold transition-all duration-300 ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light md:inline">Championship</span>
                             </a>
 
                             <a href="javascript:;"
@@ -1244,7 +1201,7 @@
                                                 <div class="grid place-content-center rounded">
                                                     <div class="relative h-12 w-12">
                                                         <img class="h-12 w-12 rounded-full object-cover"
-                                                            :src="`{{ url('resources/views/main/assets/images/${notification.profile}') }}`"
+                                                            :src="`{{ url('assets/images/${notification.profile}') }}`"
                                                             alt="image" />
                                                         <span
                                                             class="absolute bottom-0 right-[6px] block h-2 w-2 rounded-full bg-success"></span>
@@ -1313,7 +1270,7 @@
                                 <a href="javascript:;" class="group relative" @click="toggle()">
                                     <span><img
                                             class="h-9 w-9 rounded-full object-cover saturate-50 group-hover:saturate-100"
-                                            src="{{ Auth::user()->img ? asset(Auth::user()->img) : url('resources/views/main/assets/images/user-profile.jpeg') }}"
+                                            src="{{ Auth::user()->img ? asset(Auth::user()->img) : url('assets/images/user-profile.jpeg') }}"
                                             alt="image" /></span>
                                 </a>
                                 <ul x-cloak x-show="open" x-transition x-transition.duration.300ms
@@ -1322,7 +1279,7 @@
                                         <div class="flex items-center px-4 py-4">
                                             <div class="flex-none">
                                                 <img class="h-10 w-10 rounded-md object-cover"
-                                                    src="{{ Auth::user()->img ? asset(Auth::user()->img) : url('resources/views/main/assets/images/user-profile.jpeg') }}"
+                                                    src="{{ Auth::user()->img ? asset(Auth::user()->img) : url('assets/images/user-profile.jpeg') }}"
                                                     alt="image" />
                                             </div>
                                             <div class="truncate ltr:pl-4 rtl:pr-4">
@@ -1848,15 +1805,15 @@
         </div>
     </div>
 
-    <script src="{{ url('resources/views/main/assets/js/alpine-collaspe.min.js') }}"></script>
-    <script src="{{ url('resources/views/main/assets/js/alpine-persist.min.js') }}"></script>
-    <script defer src="{{ url('resources/views/main/assets/js/alpine-ui.min.js') }}"></script>
-    <script defer src="{{ url('resources/views/main/assets/js/alpine-focus.min.js') }}"></script>
-    <script defer src="{{ url('resources/views/main/assets/js/alpine.min.js') }}"></script>
-    <script src="{{ url('resources/views/main/assets/js/custom.js') }}"></script>
-    <script defer src="{{ url('resources/views/main/assets/js/apexcharts.js') }}"></script>
-    <script src="{{ url('resources/views/main/assets/js/file-upload-with-preview.iife.js') }}"></script>
-    <script src="{{ url('resources/views/main/assets/js/flatpickr.js') }}"></script>
+    <script src="{{ url('assets/js/alpine-collaspe.min.js') }}"></script>
+    <script src="{{ url('assets/js/alpine-persist.min.js') }}"></script>
+    <script defer src="{{ url('assets/js/alpine-ui.min.js') }}"></script>
+    <script defer src="{{ url('assets/js/alpine-focus.min.js') }}"></script>
+    <script defer src="{{ url('assets/js/alpine.min.js') }}"></script>
+    <script src="{{ url('assets/js/custom.js') }}"></script>
+    <script defer src="{{ url('assets/js/apexcharts.js') }}"></script>
+    <script src="{{ url('assets/js/file-upload-with-preview.iife.js') }}"></script>
+    <script src="{{ url('assets/js/flatpickr.js') }}"></script>
 
     <style>
         textarea {

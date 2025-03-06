@@ -21,7 +21,7 @@ use App\Http\Controllers\RegisterInController;
 use App\Http\Controllers\ContctFooterController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\ContactusController;
-use App\Http\Controllers\TitleWebController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -206,9 +206,3 @@ Route::get('contct_footer', [ContctFooterController::class, 'index']);
 //---------auth
 Route::post('/login', [AuthController::class, 'login']);
 // Route::post('/register', [AuthController::class, 'register']);
-
-
-/**_______________________________________________________MAJD  */
-
-
-Route::get('titles/get', [TitleWebController::class, 'index']);

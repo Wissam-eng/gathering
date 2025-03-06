@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Forum_management;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 class ForumManagementController extends Controller
 {
     public function index()
@@ -52,11 +53,11 @@ class ForumManagementController extends Controller
         }
 
         try {
+
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('images/Forum_management', 'public');
                 $imagePath = 'storage/app/public/' . $imagePath;
             }
-
             $Forum_management = Forum_management::create([
                 'title' => $request->input('title'),
                 'description' => $request->input('description'),
@@ -102,6 +103,7 @@ class ForumManagementController extends Controller
                 $imagePath = 'storage/app/public/' . $imagePath;
                 $Forum_management->image = $imagePath;
             }
+
             $Forum_management->update($input);
 
             return redirect()->route('Forum_management.index')->with('success', 'تم تعديل البيانات بنجاح');

@@ -1,6 +1,9 @@
 
 
 
+
+
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 
@@ -9,23 +12,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>VRISTO - Multipurpose Tailwind Dashboard Template</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="{{ url('resources/views/main/favicon.png') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ url('favicon.png') }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap"
         rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" media="screen"
-        href="{{ url('resources/views/main/assets/css/perfect-scrollbar.min.css') }}" />
+        href="{{ url('assets/css/perfect-scrollbar.min.css') }}" />
 
     <link rel="stylesheet" type="text/css" media="screen"
-        href="{{ url('resources/views/main/assets/css/style.css') }}" />
+        href="{{ url('assets/css/style.css') }}" />
 
     <link defer rel="stylesheet" type="text/css" media="screen"
-        href="{{ url('resources/views/main/assets/css/animate.css') }}" />
+        href="{{ url('assets/css/animate.css') }}" />
     <link rel="stylesheet" type="text/css"
-        href="{{ url('resources/views/main/assets/css/file-upload-with-preview.min.css') }}" />
-    <link rel="stylesheet" href="{{ url('resources/views/main/assets/css/flatpickr.min.css') }}" />
+        href="{{ url('assets/css/file-upload-with-preview.min.css') }}" />
+    <link rel="stylesheet" href="{{ url('assets/css/flatpickr.min.css') }}" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
@@ -33,10 +36,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script src="{{ url('resources/views/main/assets/js/perfect-scrollbar.min.js') }}"></script>
-    <script defer src="{{ url('resources/views/main/assets/js/popper.min.js') }}"></script>
-    <script defer src="{{ url('resources/views/main/assets/js/tippy-bundle.umd.min.js') }}"></script>
-    <script defer src="{{ url('resources/views/main/assets/js/sweetalert.min.js') }}"></script>
+    <script src="{{ url('assets/js/perfect-scrollbar.min.js') }}"></script>
+    <script defer src="{{ url('assets/js/popper.min.js') }}"></script>
+    <script defer src="{{ url('assets/js/tippy-bundle.umd.min.js') }}"></script>
+    <script defer src="{{ url('assets/js/sweetalert.min.js') }}"></script>
 </head>
 
 <body x-data="main" class="relative overflow-x-hidden font-nunito text-sm font-normal antialiased"
@@ -80,19 +83,19 @@
     <div class="main-container min-h-screen text-black dark:text-white-dark">
         <div x-data="auth">
             <div class="absolute inset-0">
-                <img src="{{ url('resources/views/main/assets/images/auth/bg-gradient.png') }}" alt="image"
+                <img src="{{ url('assets/images/auth/bg-gradient.png') }}" alt="image"
                     class="h-full w-full object-cover" />
             </div>
 
             <div
                 class="relative flex min-h-screen items-center justify-center bg-[url(../images/auth/map.png)] bg-cover bg-center bg-no-repeat px-6 py-10 dark:bg-[#060818] sm:px-16">
-                <img src="{{ url('resources/views/main/assets/images/auth/coming-soon-object1.png') }}" alt="image"
+                <img src="{{ url('assets/images/auth/coming-soon-object1.png') }}" alt="image"
                     class="absolute left-0 top-1/2 h-full max-h-[893px] -translate-y-1/2" />
-                <img src="{{ url('resources/views/main/assets/images/auth/coming-soon-object2.png') }}" alt="image"
+                <img src="{{ url('assets/images/auth/coming-soon-object2.png') }}" alt="image"
                     class="absolute left-24 top-0 h-40 md:left-[30%]" />
-                <img src="{{ url('resources/views/main/assets/images/auth/coming-soon-object3.png') }}" alt="image"
+                <img src="{{ url('assets/images/auth/coming-soon-object3.png') }}" alt="image"
                     class="absolute right-0 top-0 h-[300px]" />
-                <img src="{{ url('resources/views/main/assets/images/auth/polygon-object.svg') }}" alt="image"
+                <img src="{{ url('assets/images/auth/polygon-object.svg') }}" alt="image"
                     class="absolute bottom-0 end-[28%]" />
                 <div
                     class="relative w-full max-w-[870px] rounded-md bg-[linear-gradient(45deg,#fff9f9_0%,rgba(255,255,255,0)_25%,rgba(255,255,255,0)_75%,_#fff9f9_100%)] p-2 dark:bg-[linear-gradient(52.22deg,#0E1726_0%,rgba(14,23,38,0)_18.66%,rgba(14,23,38,0)_51.04%,rgba(14,23,38,0)_80.07%,#0E1726_100%)]">
@@ -167,15 +170,15 @@
         </div>
     </div>
 
-    <script src="{{ url('resources/views/main/assets/js/alpine-collaspe.min.js') }}"></script>
-    <script src="{{ url('resources/views/main/assets/js/alpine-persist.min.js') }}"></script>
-    <script defer src="{{ url('resources/views/main/assets/js/alpine-ui.min.js') }}"></script>
-    <script defer src="{{ url('resources/views/main/assets/js/alpine-focus.min.js') }}"></script>
-    <script defer src="{{ url('resources/views/main/assets/js/alpine.min.js') }}"></script>
-    <script src="{{ url('resources/views/main/assets/js/custom.js') }}"></script>
-    <script defer src="{{ url('resources/views/main/assets/js/apexcharts.js') }}"></script>
-    <script src="{{ url('resources/views/main/assets/js/file-upload-with-preview.iife.js') }}"></script>
-    <script src="{{ url('resources/views/main/assets/js/flatpickr.js') }}"></script>
+    <script src="{{ url('assets/js/alpine-collaspe.min.js') }}"></script>
+    <script src="{{ url('assets/js/alpine-persist.min.js') }}"></script>
+    <script defer src="{{ url('assets/js/alpine-ui.min.js') }}"></script>
+    <script defer src="{{ url('assets/js/alpine-focus.min.js') }}"></script>
+    <script defer src="{{ url('assets/js/alpine.min.js') }}"></script>
+    <script src="{{ url('assets/js/custom.js') }}"></script>
+    <script defer src="{{ url('assets/js/apexcharts.js') }}"></script>
+    <script src="{{ url('assets/js/file-upload-with-preview.iife.js') }}"></script>
+    <script src="{{ url('assets/js/flatpickr.js') }}"></script>
 
     <script>
         // main section

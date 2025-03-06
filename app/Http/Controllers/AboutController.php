@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\about;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 class AboutController extends Controller
 {
 
@@ -52,10 +53,12 @@ class AboutController extends Controller
         }
 
         try {
+
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('images/about', 'public');
                 $imagePath = 'storage/app/public/' . $imagePath;
             }
+
 
             $about = about::create([
                 'title' => $request->input('title'),
@@ -94,6 +97,7 @@ class AboutController extends Controller
         }
 
         try {
+
             if ($request->hasFile('image')) {
                 if ($about->image && file_exists(public_path('storage/' . $about->image))) {
                     unlink(public_path('storage/' . $about->image));
@@ -102,6 +106,7 @@ class AboutController extends Controller
                 $imagePath = 'storage/app/public/' . $imagePath;
                 $input['image'] = $imagePath;
             }
+
             $about->update($input);
             return redirect()->route('about.index')->with('success', 'تم تعديل البيانات بنجاح');
         } catch (\Exception $e) {

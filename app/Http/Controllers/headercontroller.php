@@ -60,7 +60,7 @@ class headercontroller extends Controller
         return view('header.edit', compact('header'));
     }
 
-    public function update(Request $request, $id)
+   /* public function update(Request $request, $id)
     {
 
 
@@ -101,6 +101,45 @@ class headercontroller extends Controller
         $header->save();
         return redirect()->route('header.index');
     }
+*/
+
+    public function update(Request $request, $id)
+    {
+        // التحقق من صحة البيانات فقط للحقول المرسلة
+        $validator = Validator::make($request->all(), [
+            'header_value1' => 'nullable|array',
+            'header_value2' => 'nullable|array',
+            'header_value3' => 'nullable|array',
+            'header_value4' => 'nullable|array',
+            'header_value5' => 'nullable|array',
+            'header_value6' => 'nullable|array',
+        ]);
+
+        // في حالة فشل التحقق
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', 'حدث خطأ أثناء التسجيل: ' . $validator->errors());
+        }
+
+        // البحث عن السجل باستخدام ID
+        $header = header::findOrFail($id);
+
+        // بناء مصفوفة التحديث ديناميكيًا للحقول المرسلة فقط
+        $updatedFields = [];
+        foreach (['header_value1', 'header_value2', 'header_value3', 'header_value4', 'header_value5', 'header_value6'] as $field) {
+            if ($request->has($field)) { // التحقق إذا كان الحقل مُرسلًا
+                $updatedFields[$field] = json_encode($request->input($field));
+            }
+        }
+
+        // تحديث الحقول المُرسلة فقط
+        $header->update($updatedFields);
+
+        // إعادة التوجيه بعد النجاح
+        return redirect()->route('header.index');
+    }
+
+
+
 
     public function destroy($id)
     {

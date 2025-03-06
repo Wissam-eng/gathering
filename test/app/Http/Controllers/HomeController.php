@@ -136,7 +136,7 @@ class HomeController extends Controller
             }
 
 
-            if($request->has('password')) {
+            if ($request->has('password')) {
                 $user->password = Hash::make($request->password);
             }
 
@@ -253,6 +253,7 @@ class HomeController extends Controller
             'address' => 'nullable|string',
             'from' => 'nullable|string',
             'text' => 'nullable|string',
+            'welcome' => 'nullable|string',
             'to' => 'nullable|string',
         ]);
 
@@ -279,6 +280,7 @@ class HomeController extends Controller
                 'from' => $request->input('from'),
                 'text' => $request->input('text'),
                 'to' => $request->input('to'),
+                'welcome' => $request->input('welcome'),
             ]);
 
 
@@ -311,6 +313,7 @@ class HomeController extends Controller
             'date' => 'sometimes|date',
             'text' => 'sometimes|string',
             'from' => 'sometimes|string',
+            'welcome' => 'nullable|string',
             'to' => 'sometimes|string',
         ]);
 

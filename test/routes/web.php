@@ -21,7 +21,6 @@ use App\Http\Controllers\ContctFooterController;
 use App\Http\Controllers\headercontroller;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\ContactusController;
-use App\Http\Controllers\TitleWebController;
 
 
 use App\Exports\membersExport;
@@ -111,17 +110,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('Forum_management', ForumManagementController::class);
     Route::resource('organizing_entity', OrganizingEntityController::class);
     Route::resource('supervisor_speech', SupervisorSpeechController::class);
-
-
-
-    Route::PUT('/title_web/update', [TitleWebController::class, 'update'])->name('title_web.update');
-    Route::get('/title_web/edit', [TitleWebController::class, 'edit'])->name('title_web.edit');
-
-
 });
 
 // Route for home (optional)
- Route::get('/home', [HomeController::class, 'index'])->name('home');
+// Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 // Laravel's authentication routes
 Auth::routes();
