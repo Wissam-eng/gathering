@@ -34,7 +34,7 @@
 
             <div>
                 <label for="ctnTextarea">Description</label>
-                <textarea id="ctnTextarea" rows="3" name="description" class="form-textarea" placeholder="Description" required></textarea>
+                <textarea id="ctnTextarea" rows="3" name="description" class="form-textarea" placeholder="Description" ></textarea>
             </div>
             <div>
                 <label for="ctnFile">Upload Imag</label>

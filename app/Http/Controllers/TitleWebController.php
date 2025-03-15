@@ -23,45 +23,16 @@ class TitleWebController extends Controller
     }
 
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(TitleWeb $titleWeb)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit()
     {
         $titleWeb = TitleWeb::findOrFail(1); // تعديل حسب المطلوب
         return view('tilte_web.edit', compact('titleWeb'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request)
     {
-     //   dd($request->all());
+
 
         // تحديد شروط التحقق
         $validator = Validator::make($request->all(), [
@@ -75,6 +46,11 @@ class TitleWebController extends Controller
             'title_ForumManagement' => 'nullable|string|max:255',
             'title_Organizer' => 'nullable|string|max:255',
             'title_LATEST_NEWS' => 'nullable|string|max:255',
+            'register_in' => 'nullable|string|max:255',
+            'partners' => 'nullable|string|max:255',
+            'gallery_video' => 'nullable|string|max:255',
+            'supervisor_speech' => 'nullable|string|max:255',
+            'about' => 'nullable|string|max:255',
         ]);
 
         // التحقق من فشل الفاليديتور
@@ -99,19 +75,14 @@ class TitleWebController extends Controller
             'title_ForumManagement',
             'title_Organizer',
             'title_LATEST_NEWS',
+            'register_in',
+            'partners',
+            'gallery_video',
+            'supervisor_speech',
+            'about',
         ]));
 
         // استجابة JSON عند النجاح
         return redirect()->back()->with('success', 'تم التحديث بنجاح!');
-
-    }
-
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(TitleWeb $titleWeb)
-    {
-        //
     }
 }

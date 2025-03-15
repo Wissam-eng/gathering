@@ -119,34 +119,6 @@ class VideoGalleryController extends Controller
         try {
             $input = $request->all();
 
-            if ($request->hasFile('images')) {
-                if ($video_gallery->image && file_exists(public_path($video_gallery->image))) {
-                    unlink(public_path($video_gallery->image));
-                }
-
-                $imagePath = $request->file('images')->store('images/video_gallery', 'public');
-                $input['image'] = 'storage/images/video_gallery/' . $imagePath;
-            } else {
-                $input['image'] = $video_gallery->image;
-            }
-
-            if ($request->hasFile('video')) {
-                if ($video_gallery->video && file_exists(public_path($video_gallery->video))) {
-                    unlink(public_path($video_gallery->video));
-                }
-
-                $videoPath = $request->file('video')->store('video/video_gallery', 'public');
-                $fullPath = storage_path('app/public/' . $videoPath);
-
-                $getID3 = new getID3();
-                $fileInfo = $getID3->analyze($fullPath);
-                $input['duration'] = $fileInfo['playtime_seconds'] ?? 0;
-                $input['video'] = 'storage/video/video_gallery/' . $videoPath;
-            } else {
-                $input['video'] = $video_gallery->video;
-                $input['duration'] = $video_gallery->duration;
-            }
-
 
             $video_gallery->update($input);
 

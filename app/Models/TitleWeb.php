@@ -20,6 +20,10 @@ class TitleWeb extends Model
         'title_ForumManagement',
         'title_Organizer',
         'title_LATEST_NEWS',
-
+        'about',
+        'supervisor_speech',
+        'gallery_video',
+        'partners',
+        'register_in'
     ];
 }

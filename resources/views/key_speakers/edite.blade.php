@@ -51,7 +51,8 @@
         </div>
 
         <!-- form controls -->
-        <form class="space-y-5" method="POST" action="{{ route('key_speakers.update', $card) }}" enctype="multipart/form-data">
+        <form class="space-y-5" method="POST" action="{{ route('key_speakers.update', $card) }}"
+            enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -73,7 +74,7 @@
 
             <div>
                 <label for="ctnTextarea">Description</label>
-                <textarea id="ctnTextarea" rows="3" name="description" class="form-textarea" placeholder="Description" required> {{ $card->description }}</textarea>
+                <textarea id="ctnTextarea" rows="3" name="description" class="form-textarea" placeholder="Description" > {{ $card->description }}</textarea>
             </div>
             <div>
                 <label for="ctnFile">Upload Imag</label>
