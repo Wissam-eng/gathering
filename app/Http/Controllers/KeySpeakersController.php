@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+
 class KeySpeakersController extends Controller
 {
     public function index()
@@ -43,17 +44,17 @@ class KeySpeakersController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-       $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'name' => 'sometimes|string|max:255',
             'title' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string',
+            'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,svg,webp,png,jpg,gif|max:10000',
             'file' => 'nullable|mimes:pdf,xlsx,doc,docx,txt|max:10000',
         ]);
 
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->with('error', $validator->fails() .'التحقق من البيانات فشل');
+            return redirect()->back()->with('error', $validator->errors(). 'التحقق من البيانات فشل');
         }
 
 
@@ -75,12 +76,10 @@ class KeySpeakersController extends Controller
             $Key_speakers = Key_speakers::create([
                 'title' => $request->input('title'),
                 'name' => $request->input('name'),
-                'description' => $request->input('description'),
+                'description' => $request->input('description') ?? null,
                 'image' => $imagePath ?? null,
                 'file' => $filePath ?? null,
-                // 'address' => $request->input('address'),
-                // 'date' => $request->input('date'),
-                // 'text' => $request->input('text'),
+
             ]);
 
             return redirect()->route('key_speakers.index')->with('success', 'تم إضافة البيانات بنجاح');
@@ -91,6 +90,9 @@ class KeySpeakersController extends Controller
 
     public function update(Request $request, $id)
     {
+
+
+
         $Key_speakers = Key_speakers::find($id);
 
         if (!$Key_speakers) {
@@ -100,13 +102,13 @@ class KeySpeakersController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|string|max:255',
             'title' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string',
+            'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,svg ,webp,png,jpg,gif|max:10000',
             'file' => 'nullable|mimes:pdf,xlsx,doc,docx,txt|max:10000',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->with('error', 'التحقق من البيانات فشل');
+           return redirect()->back()->with('error', $validator->errors(). 'التحقق من البيانات فشل');
         }
 
         try {
